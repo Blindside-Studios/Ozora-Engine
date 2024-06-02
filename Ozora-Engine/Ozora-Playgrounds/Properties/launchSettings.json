@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "Ozora-Playgrounds (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "Ozora-Playgrounds (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}
