@@ -12,22 +12,16 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
-using Ozora;
-using Ozora_Playgrounds.Pages;
 
-namespace Ozora_Playgrounds
+namespace Ozora_Playgrounds.Pages
 {
-    public sealed partial class MainWindow : Window
+    public sealed partial class PhysicsViewPort : Page
     {
-        public MainWindow()
+        public PhysicsViewPort()
         {
             this.InitializeComponent();
-            ViewPort.NavigateToType(typeof(PhysicsViewPort), null, null);
-        }
-
-        private void ViewPort_PointerMoved(object sender, PointerRoutedEventArgs e)
-        {
-            OzoraInterface.Instance.PointerLocation = e.GetCurrentPoint(ViewPort).Position;
+            BodyViewPort.NavigateToType(typeof(PhysicsSunSimulation), null, null);
+            StateOverlay.NavigateToType(typeof(ControlsOverlay), null, null);
         }
     }
 }
