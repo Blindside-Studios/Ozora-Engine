@@ -12,6 +12,7 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Ozora;
 
 namespace Ozora_Playgrounds.Pages
 {
@@ -20,6 +21,17 @@ namespace Ozora_Playgrounds.Pages
         public PhysicsSunSimulation()
         {
             this.InitializeComponent();
+            OzoraInterface.Instance.ObjectWidth = SunObject.ActualWidth;
+            OzoraInterface.Instance.ObjectHeight = SunObject.ActualHeight;
+            OzoraInterface.Instance.UpdateObjectTranslationRequested += Instance_UpdateObjectTranslationRequested;
+        }
+
+        private void Instance_UpdateObjectTranslationRequested(System.Numerics.Vector3 obj)
+        {
+            DispatcherQueue.TryEnqueue(() =>
+            {
+                this.SunObject.Translation = obj;
+            });
         }
     }
 }

@@ -10,5 +10,8 @@
 
     <Grid>
         <Rectangle Fill="Gray" Opacity="0.5"/>
+        <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+            <Slider x:Name="FrameRateSlider" Minimum="1" Maximum="120" Header="Framerate" ValueChanged="FrameRateSlider_ValueChanged"/>
+        </StackPanel>
     </Grid>
 </Page>

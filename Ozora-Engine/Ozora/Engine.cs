@@ -72,7 +72,7 @@ namespace Ozora
                 {
                     _pointerLocation = value;
                     OnPropertyChanged(nameof(PointerLocation));
-                    ObjectTranslation = new Vector3((float)_pointerLocation.X - 50, (float)_pointerLocation.Y - 50, 0);
+                    Ozora.Physics.Instance.AnimateActivity = true;
                 }
             }
         }
@@ -81,13 +81,14 @@ namespace Ozora
         public double ObjectWidth { get; set; }
         public double ObjectHeight { get; set; }
 
+        public event Action<Vector3> UpdateObjectTranslationRequested;
         public Vector3 ObjectTranslation
         {
             get => _objectTranslation;
             set
             {
                 _objectTranslation = value;
-                OnPropertyChanged(nameof(ObjectTranslation));
+                UpdateObjectTranslationRequested?.Invoke(value);
             }
         }
         private Vector3 _objectTranslation;
@@ -113,6 +114,21 @@ namespace Ozora
 
     public class OzoraSettings: INotifyPropertyChanged
     {
+        Ozora.DefaultValues defaults = new Ozora.DefaultValues();
+
+        public static OzoraSettings Instance
+        {
+            get
+            {
+                if (_instance == null)
+                {
+                    _instance = new OzoraSettings();
+                }
+                return _instance;
+            }
+        }
+        private static OzoraSettings _instance;
+
         public TrailingType TrailingType
         {
             get { return _trailingType; }
@@ -122,7 +138,9 @@ namespace Ozora
 
         public int FrameRate
         {
-            get { return _frameRate; }
+            get {
+                if (_frameRate == 0) return defaults.FrameRate;
+                else return _frameRate; }
             set { SetField(ref _frameRate, value); }
         }
         private int _frameRate;

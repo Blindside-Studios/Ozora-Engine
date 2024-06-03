@@ -12,6 +12,7 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Ozora;
 
 namespace Ozora_Playgrounds.Pages
 {
@@ -20,6 +21,13 @@ namespace Ozora_Playgrounds.Pages
         public ControlsOverlay()
         {
             this.InitializeComponent();
+            Ozora.DefaultValues defaults = new Ozora.DefaultValues();
+            FrameRateSlider.Value = defaults.FrameRate;
+        }
+
+        private void FrameRateSlider_ValueChanged(object sender, RangeBaseValueChangedEventArgs e)
+        {
+            OzoraSettings.Instance.FrameRate = (int)e.NewValue;
         }
     }
 }
