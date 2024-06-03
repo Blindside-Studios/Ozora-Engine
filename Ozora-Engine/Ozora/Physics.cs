@@ -6,6 +6,7 @@ using System.Numerics;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Windows.Media.Devices;
 
 namespace Ozora
 {
@@ -40,6 +41,7 @@ namespace Ozora
                 else if (value == false && _animateActivity == true)
                 {
                     _animateActivity = false;
+                    _timer.Dispose();
                 }
             } 
         }
@@ -65,7 +67,8 @@ namespace Ozora
             OzoraInterface.Instance.ObjectTranslation = _finalTranslation;
 
             // check may be removed as this becomes a non-variable
-            if (1000 / Ozora.OzoraSettings.Instance.FrameRate != interval) _timer = new Timer(AnimateObject, null, 0, interval);
+            if (1000 / Ozora.OzoraSettings.Instance.FrameRate != interval) { AnimateActivity = false; interval = 1000 / Ozora.OzoraSettings.Instance.FrameRate; }
+            if (direction.Length() < 0.01) { AnimateActivity = false; Debug.WriteLine("Animation cancelled"); }
         }
     }
 
