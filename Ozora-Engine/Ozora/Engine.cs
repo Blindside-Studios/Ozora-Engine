@@ -145,6 +145,17 @@ namespace Ozora
         }
         private int _frameRate;
 
+        public double MaxVectorDeltaPerFrame
+        {
+            get
+            {
+                if (_maxVectorDeltaPerFrame == 0) return defaults.MaxVectorDeltaPerFrame;
+                else return _maxVectorDeltaPerFrame;
+            }
+            set { SetField(ref _maxVectorDeltaPerFrame, value); }
+        }
+        private double _maxVectorDeltaPerFrame;
+
         public int MaxTrailingSpeed
         {
             get { return _maxTrailingSpeed; }

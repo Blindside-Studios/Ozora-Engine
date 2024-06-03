@@ -8,6 +8,7 @@ namespace Ozora
 {   
     public class DefaultValues
     {        
-        public int FrameRate = 120;
+        public int FrameRate = 60;
+        public double MaxVectorDeltaPerFrame = 1;
     }
 }

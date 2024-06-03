@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.Linq;
 using System.Numerics;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.Media.Devices;
+using Windows.UI.WebUI;
 
 namespace Ozora
 {
@@ -15,7 +17,7 @@ namespace Ozora
         private static Timer _timer;
         private int interval = 1000 / Ozora.OzoraSettings.Instance.FrameRate;
 
-        private VectorState _vectorState;
+        private VectorState _vectorState = new VectorState() { RateOfChange = new Vector3(0, 0, 0) };
 
         public static Physics Instance
         {
@@ -60,8 +62,22 @@ namespace Ozora
             direction.X = direction.X / 20;
             direction.Y = direction.Y / 20;
 
+            Vector2 _deltaVector = new Vector2(direction.X - _vectorState.RateOfChange.X, direction.Y - _vectorState.RateOfChange.Y);
+
+            if (_deltaVector.Length() > OzoraSettings.Instance.MaxVectorDeltaPerFrame)
+            {
+                _deltaVector = Vector2.Normalize(_deltaVector) * (float)OzoraSettings.Instance.MaxVectorDeltaPerFrame;
+            }
+
+            Vector3 _deltaVector3 = new Vector3(_deltaVector, 0);
+            direction = new Vector2(
+                _vectorState.RateOfChange.X + _deltaVector.X,
+                _vectorState.RateOfChange.Y + _deltaVector.Y);
+
+            _vectorState.RateOfChange = new Vector3(direction, 0);
+
             Vector3 _finalTranslation = new Vector3(
-                (float)(elementPosition.X + direction.X - OzoraInterface.Instance.ObjectWidth / 2), 
+                (float)(elementPosition.X + direction.X - OzoraInterface.Instance.ObjectWidth / 2),
                 (float)(elementPosition.Y + direction.Y - OzoraInterface.Instance.ObjectHeight / 2), 0);
 
             OzoraInterface.Instance.ObjectTranslation = _finalTranslation;
@@ -75,7 +91,5 @@ namespace Ozora
     internal class VectorState
     {
         public Vector3 RateOfChange { get; set; }
-        public double VectorAngle { get; set; }
-        public double VectorLength { get; set; }
     }
 }

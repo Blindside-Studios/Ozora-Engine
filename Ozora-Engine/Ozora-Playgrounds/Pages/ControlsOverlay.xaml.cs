@@ -23,11 +23,17 @@ namespace Ozora_Playgrounds.Pages
             this.InitializeComponent();
             Ozora.DefaultValues defaults = new Ozora.DefaultValues();
             FrameRateSlider.Value = defaults.FrameRate;
+            MaxVectorDeltaSlider.Value = defaults.MaxVectorDeltaPerFrame;
         }
 
         private void FrameRateSlider_ValueChanged(object sender, RangeBaseValueChangedEventArgs e)
         {
             OzoraSettings.Instance.FrameRate = (int)e.NewValue;
+        }
+
+        private void MaxVectorDeltaSlider_ValueChanged(object sender, RangeBaseValueChangedEventArgs e)
+        {
+            OzoraSettings.Instance.MaxVectorDeltaPerFrame = (double)e.NewValue;
         }
     }
 }
