@@ -156,6 +156,17 @@ namespace Ozora
         }
         private double _maxVectorDeltaPerFrame;
 
+        public double RubberBandingModifier
+        {
+            get
+            {
+                if (_rubberBandingModifier == 0) return defaults.RubberBandingModifier;
+                else return _rubberBandingModifier;
+            }
+            set { SetField(ref _rubberBandingModifier, value); }
+        }
+        private double _rubberBandingModifier;
+
         public int MaxTrailingSpeed
         {
             get { return _maxTrailingSpeed; }

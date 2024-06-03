@@ -10,5 +10,6 @@ namespace Ozora
     {        
         public int FrameRate = 60;
         public double MaxVectorDeltaPerFrame = 1;
+        public double RubberBandingModifier = 0.05;
     }
 }

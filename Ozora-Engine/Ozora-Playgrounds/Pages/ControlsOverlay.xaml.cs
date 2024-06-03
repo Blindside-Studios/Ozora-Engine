@@ -24,6 +24,7 @@ namespace Ozora_Playgrounds.Pages
             Ozora.DefaultValues defaults = new Ozora.DefaultValues();
             FrameRateSlider.Value = defaults.FrameRate;
             MaxVectorDeltaSlider.Value = defaults.MaxVectorDeltaPerFrame;
+            RubberBandingSlider.Value = defaults.RubberBandingModifier;
         }
 
         private void FrameRateSlider_ValueChanged(object sender, RangeBaseValueChangedEventArgs e)
@@ -34,6 +35,11 @@ namespace Ozora_Playgrounds.Pages
         private void MaxVectorDeltaSlider_ValueChanged(object sender, RangeBaseValueChangedEventArgs e)
         {
             OzoraSettings.Instance.MaxVectorDeltaPerFrame = (double)e.NewValue;
+        }
+
+        private void RubberBandingSlider_ValueChanged(object sender, RangeBaseValueChangedEventArgs e)
+        {
+            OzoraSettings.Instance.RubberBandingModifier = (double)e.NewValue;
         }
     }
 }

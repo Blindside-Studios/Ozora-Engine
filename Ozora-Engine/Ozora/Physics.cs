@@ -59,8 +59,8 @@ namespace Ozora
 
             Vector2 direction = cursorPosition - elementPosition;
 
-            direction.X = direction.X / 20;
-            direction.Y = direction.Y / 20;
+            direction.X = direction.X * (float)OzoraSettings.Instance.RubberBandingModifier;
+            direction.Y = direction.Y * (float)OzoraSettings.Instance.RubberBandingModifier;
 
             Vector2 _deltaVector = new Vector2(direction.X - _vectorState.RateOfChange.X, direction.Y - _vectorState.RateOfChange.Y);
 
@@ -84,7 +84,7 @@ namespace Ozora
 
             // check may be removed as this becomes a non-variable
             if (1000 / Ozora.OzoraSettings.Instance.FrameRate != interval) { AnimateActivity = false; interval = 1000 / Ozora.OzoraSettings.Instance.FrameRate; }
-            if (direction.Length() < 0.01) { AnimateActivity = false; Debug.WriteLine("Animation cancelled"); }
+            if (direction.Length() < 0.0001) { AnimateActivity = false; Debug.WriteLine("Animation cancelled"); }
         }
     }
 
