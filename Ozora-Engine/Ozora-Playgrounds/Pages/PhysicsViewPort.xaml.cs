@@ -5,6 +5,7 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
+using Ozora;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -22,6 +23,20 @@ namespace Ozora_Playgrounds.Pages
             this.InitializeComponent();
             BodyViewPort.NavigateToType(typeof(PhysicsSunSimulation), null, null);
             StateOverlay.NavigateToType(typeof(ControlsOverlay), null, null);
+            OzoraSettings.Instance.SimulationStyleChanged += Instance_SimulationStyleChanged;
+        }
+
+        private void Instance_SimulationStyleChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            switch (OzoraSettings.Instance.SimulationStyle)
+            {
+                case SimulationStyle.Sun:
+                    BodyViewPort.NavigateToType(typeof(PhysicsSunSimulation), null, null);
+                    break;
+                case SimulationStyle.Clouds:
+                    BodyViewPort.NavigateToType(typeof(PhysicsCloudsSimulation), null, null);
+                    break;
+            }
         }
     }
 }

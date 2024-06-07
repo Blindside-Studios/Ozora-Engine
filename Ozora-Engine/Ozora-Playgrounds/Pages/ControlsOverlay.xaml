@@ -13,6 +13,10 @@
         <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="10">
             <TextBlock Text="Powered by" FontSize="16"/>
             <TextBlock Text="Ozora Engine" FontSize="30" Margin="0,-10,0,10"/>
+            <ComboBox x:Name="SimulationPickerComboBox" Header="Simulation Style" SelectedIndex="0" SelectionChanged="SimulationPickerComboBox_SelectionChanged">
+                <x:String>Sun</x:String>
+                <x:String>Clouds</x:String>
+            </ComboBox>
             <Slider x:Name="FrameRateSlider" Minimum="1" Maximum="120" Header="Framerate" ValueChanged="FrameRateSlider_ValueChanged"/>
             <Slider x:Name="MaxVectorDeltaSlider" Header="Max Vector Delta" Minimum="0.1" Maximum="10" StepFrequency="0.1" SmallChange="0.1" ValueChanged="MaxVectorDeltaSlider_ValueChanged"/>
             <Slider x:Name="RubberBandingSlider" Header="Rubber Banding Factor (Max Speed)" Minimum="0.01" Maximum="0.5" StepFrequency="0.01" SmallChange="0.01" ValueChanged="RubberBandingSlider_ValueChanged"/>

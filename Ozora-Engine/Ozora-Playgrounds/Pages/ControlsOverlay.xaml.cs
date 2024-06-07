@@ -41,5 +41,21 @@ namespace Ozora_Playgrounds.Pages
         {
             OzoraSettings.Instance.RubberBandingModifier = (double)e.NewValue;
         }
+
+        private void SimulationPickerComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ComboBox _comboBox = (ComboBox)sender;
+            switch (_comboBox.SelectedIndex)
+            {
+                case 0:
+                    OzoraSettings.Instance.SimulationStyle = SimulationStyle.Sun;
+                    break;
+                case 1:
+                    OzoraSettings.Instance.SimulationStyle = SimulationStyle.Clouds;
+                    break;
+                default:
+                    break;
+            }
+        }
     }
 }

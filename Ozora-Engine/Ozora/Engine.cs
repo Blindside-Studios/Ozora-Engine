@@ -129,6 +129,20 @@ namespace Ozora
         }
         private static OzoraSettings _instance;
 
+        public SimulationStyle SimulationStyle
+        {
+            get => _simulationStyle;
+            set
+            {
+                if (_simulationStyle != value)
+                {
+                    _simulationStyle = value;
+                    SimulationStyleChanged?.Invoke(this, new PropertyChangedEventArgs(nameof (SimulationStyle)));
+                }
+            }
+        }
+        private SimulationStyle _simulationStyle;
+
         public TrailingType TrailingType
         {
             get { return _trailingType; }
@@ -177,6 +191,7 @@ namespace Ozora
 
         // Boilerplate code for INotifyPropertyChanged event
         public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler SimulationStyleChanged;
         protected virtual void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
@@ -195,5 +210,11 @@ namespace Ozora
         None,
         Vector,
         Classic
+    }
+
+    public enum SimulationStyle
+    {
+        Sun,
+        Clouds
     }
 }

@@ -13,6 +13,7 @@
   </PropertyGroup>
   <ItemGroup>
     <None Remove="Pages\ControlsOverlay.xaml" />
+    <None Remove="Pages\PhysicsCloudsSimulation.xaml" />
     <None Remove="Pages\PhysicsSunSimulation.xaml" />
     <None Remove="Pages\PhysicsViewPort.xaml" />
   </ItemGroup>
@@ -68,4 +69,10 @@
   <PropertyGroup Condition="'$(DisableHasPackageAndPublishMenuAddedByProject)'!='true' and '$(EnableMsixTooling)'=='true'">
     <HasPackageAndPublishMenu>true</HasPackageAndPublishMenu>
   </PropertyGroup>
+  <ItemGroup>
+    <CustomAdditionalCompileInputs Remove="Pages\PhysicsCloudsSimulation.xaml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Remove="Pages\PhysicsCloudsSimulation.xaml" />
+  </ItemGroup>
 </Project>
