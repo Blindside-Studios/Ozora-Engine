@@ -32,25 +32,34 @@ namespace Ozora
         }
         private static Physics _instance;
 
-        public bool AnimateActivity { 
+        public bool AnimateActivity
+        {
             set
             {
                 if (value == true && _animateActivity == false)
                 {
                     _animateActivity = true;
-                    _timer = new Timer(AnimateObject, null, 0, interval);
+                    switch (OzoraSettings.Instance.SimulationStyle)
+                    {
+                        case SimulationStyle.Sun:
+                            _timer = new Timer(AnimateSunObject, null, 0, interval);
+                            break;
+                        case SimulationStyle.Clouds:
+                            _timer = new Timer(AnimateCloudsObject, null, 0, interval);
+                            break;
+                    }
                 }
                 else if (value == false && _animateActivity == true)
                 {
                     _animateActivity = false;
                     _timer.Dispose();
                 }
-            } 
+            }
         }
         private bool _animateActivity;
 
 
-        private void AnimateObject(object state)
+        private void AnimateSunObject(object state)
         {
             Vector2 cursorPosition = new Vector2((float)OzoraInterface.Instance.PointerLocation.X, (float)OzoraInterface.Instance.PointerLocation.Y);
             Vector2 elementPosition = new Vector2(
@@ -85,6 +94,11 @@ namespace Ozora
             // check may be removed as this becomes a non-variable
             if (1000 / Ozora.OzoraSettings.Instance.FrameRate != interval) { AnimateActivity = false; interval = 1000 / Ozora.OzoraSettings.Instance.FrameRate; }
             if (direction.Length() < 0.0001) { AnimateActivity = false; Debug.WriteLine("Animation cancelled"); }
+        }
+
+        private void AnimateCloudsObject(object state)
+        {
+
         }
     }
 
