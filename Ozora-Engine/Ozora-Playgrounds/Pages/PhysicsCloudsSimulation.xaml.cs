@@ -32,6 +32,13 @@ namespace Ozora_Playgrounds.Pages
 
         private void CloudsGrid_Loaded(object sender, RoutedEventArgs e)
         {
+            loadClouds();
+        }
+
+        private void loadClouds()
+        {
+            CloudsGrid.Children.Clear();
+
             OzoraInterface.Instance.UIDispatcherQueue = Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread();
             OzoraInterface.Instance.CloudGrid = CloudsGrid;
 
@@ -46,7 +53,7 @@ namespace Ozora_Playgrounds.Pages
             };
             System.Numerics.Vector3[] _vectorsList = initializer.GenerateCloudPositions(settings);
 
-            
+
             Random rnd = new Random();
             foreach (Vector3 position in _vectorsList)
             {
@@ -64,6 +71,11 @@ namespace Ozora_Playgrounds.Pages
                 CloudsGrid.Children.Add(rect);
                 rect.Opacity = 0.5;
             }
+        }
+
+        private void CloudsGrid_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            loadClouds();
         }
     }
 }
