@@ -12,6 +12,18 @@
     <EnableMsixTooling>true</EnableMsixTooling>
   </PropertyGroup>
   <ItemGroup>
+    <Content Remove="Assets\CloudSprites\cloud - 0.png" />
+    <Content Remove="Assets\CloudSprites\cloud - 1.png" />
+    <Content Remove="Assets\CloudSprites\cloud - 2.png" />
+    <Content Remove="Assets\CloudSprites\cloud - 3.png" />
+    <Content Remove="Assets\CloudSprites\cloud - 4.png" />
+    <Content Remove="Assets\CloudSprites\cloud - 5.png" />
+    <Content Remove="Assets\CloudSprites\cloud - 6.png" />
+    <Content Remove="Assets\CloudSprites\cloud - 7.png" />
+    <Content Remove="Assets\CloudSprites\cloud - 8.png" />
+    <Content Remove="Assets\CloudSprites\cloud - 9.png" />
+  </ItemGroup>
+  <ItemGroup>
     <None Remove="Pages\ControlsOverlay.xaml" />
     <None Remove="Pages\PhysicsCloudsSimulation.xaml" />
     <None Remove="Pages\PhysicsSunSimulation.xaml" />
@@ -74,5 +86,37 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Remove="Pages\PhysicsCloudsSimulation.xaml" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="Assets\CloudSprites\cloud - 0.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Assets\CloudSprites\cloud - 1.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Assets\CloudSprites\cloud - 2.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Assets\CloudSprites\cloud - 3.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Assets\CloudSprites\cloud - 4.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Assets\CloudSprites\cloud - 5.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Assets\CloudSprites\cloud - 6.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Assets\CloudSprites\cloud - 7.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Assets\CloudSprites\cloud - 8.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Assets\CloudSprites\cloud - 9.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 </Project>

@@ -12,7 +12,7 @@
 
     <Grid>
         <Grid x:Name="CloudsGrid" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" SizeChanged="CloudsGrid_SizeChanged"/>
-        <Rectangle Opacity="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="600,10,10,10">
+        <Rectangle Opacity="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="750,10,10,10">
             <Rectangle.Fill>
                 <media:AcrylicBrush
                     x:Name="VibrantAcrylicBrush"

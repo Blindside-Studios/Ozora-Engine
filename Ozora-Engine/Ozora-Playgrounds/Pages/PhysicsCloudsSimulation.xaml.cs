@@ -17,6 +17,7 @@ using System.Numerics;
 using System.Drawing;
 using Microsoft.UI.Xaml.Hosting;
 using Microsoft.UI.Composition;
+using Microsoft.UI.Xaml.Media.Imaging;
 
 namespace Ozora_Playgrounds.Pages
 {
@@ -49,7 +50,7 @@ namespace Ozora_Playgrounds.Pages
                 AreaHeight = CloudsGrid.ActualHeight,
                 ImageWidth = 100,
                 ImageHeight = 100,
-                DensityModifier = 5
+                DensityModifier = 10
             };
             System.Numerics.Vector3[] _vectorsList = initializer.GenerateCloudPositions(settings);
 
@@ -57,19 +58,20 @@ namespace Ozora_Playgrounds.Pages
             Random rnd = new Random();
             foreach (Vector3 position in _vectorsList)
             {
-                Microsoft.UI.Xaml.Shapes.Rectangle rect = new();
-                rect.Height = 100;
-                rect.Width = 100;
-                //rect.RadiusX = 50;
-                //rect.RadiusY = 50;
-                rect.HorizontalAlignment = HorizontalAlignment.Left;
-                rect.VerticalAlignment = VerticalAlignment.Top;
-                rect.Translation = position;
-                rect.CenterPoint = new Vector3(50, 50, 0);
-                rect.Rotation = rnd.Next(90);
-                rect.Fill = new SolidColorBrush(Microsoft.UI.Colors.White);
-                CloudsGrid.Children.Add(rect);
-                rect.Opacity = 0.5;
+                Image cloud = new();
+                cloud.Height = 100;
+                cloud.Width = 100;
+                cloud.HorizontalAlignment = HorizontalAlignment.Left;
+                cloud.VerticalAlignment = VerticalAlignment.Top;
+                cloud.Translation = position;
+                cloud.CenterPoint = new Vector3(50, 50, 0);
+                
+                var bitmapImage = new BitmapImage(new Uri("ms-appx:///Assets/CloudSprites/cloud - " + rnd.Next(0,9).ToString() + ".png"));
+                cloud.Source = bitmapImage;
+                cloud.Stretch = Stretch.UniformToFill;
+
+                CloudsGrid.Children.Add(cloud);
+                cloud.Opacity = 0.5;
             }
         }
 
