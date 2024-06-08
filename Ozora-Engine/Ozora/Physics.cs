@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
@@ -8,6 +10,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.Media.Devices;
+using Windows.System;
 using Windows.UI.WebUI;
 
 namespace Ozora
@@ -98,12 +101,40 @@ namespace Ozora
 
         private void AnimateCloudsObject(object state)
         {
+            if (OzoraInterface.Instance.CloudGrid != null && OzoraInterface.Instance.UIDispatcherQueue != null)
+            {
+                OzoraInterface.Instance.UIDispatcherQueue.TryEnqueue(() =>
+                {
+                    foreach (UIElement element in OzoraInterface.Instance.CloudGrid.Children)
+                    {
+                        Vector2 _cloudCoordinate = new Vector2(
+                            element.Translation.X + (float)OzoraInterface.Instance.ObjectWidth,
+                            element.Translation.Y + (float)OzoraInterface.Instance.ObjectHeight);
+                        Vector2 _cursorPosition = OzoraInterface.Instance.PointerLocation.ToVector2();
 
+                        Vector2 _distanceVector = _cloudCoordinate - _cursorPosition;
+
+                        // cloud diameter: 200
+                        double _length = _distanceVector.Length();
+                        double _opacityCaluclation = _length / 250;
+                        if (_opacityCaluclation > 1) _opacityCaluclation = 1;
+                        
+                        element.Opacity = 1 - _opacityCaluclation;
+                    }
+                    
+                    if (1000 / Ozora.OzoraSettings.Instance.FrameRate != interval) { AnimateActivity = false; interval = 1000 / Ozora.OzoraSettings.Instance.FrameRate; }
+
+                    // if cursor position remains unchanged, stop updating
+                    if (_vectorState.PointerPosition == OzoraInterface.Instance.PointerLocation) { AnimateActivity = false; Debug.WriteLine("Animation cancelled"); }
+                    _vectorState.PointerPosition = OzoraInterface.Instance.PointerLocation;
+                });
+            }
         }
     }
 
     internal class VectorState
     {
         public Vector3 RateOfChange { get; set; }
+        public Windows.Foundation.Point PointerPosition { get; set; }
     }
 }

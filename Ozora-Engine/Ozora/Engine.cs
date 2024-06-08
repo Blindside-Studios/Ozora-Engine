@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.UI.Composition;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -8,6 +9,9 @@ using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Dispatching;
 
 namespace Ozora
 {
@@ -63,6 +67,13 @@ namespace Ozora
         }
         private static OzoraInterface _instance;
 
+        public DispatcherQueue UIDispatcherQueue;
+
+        public void LaunchNewActivity()
+        {
+            Ozora.Physics.Instance.AnimateActivity = false;
+        }
+
         public Windows.Foundation.Point PointerLocation 
         {
             get => _pointerLocation;
@@ -103,6 +114,8 @@ namespace Ozora
             }
         }
         private double _objectRotation;
+
+        public Grid CloudGrid { get; set; }
 
 
         public event PropertyChangedEventHandler PropertyChanged;

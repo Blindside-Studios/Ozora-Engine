@@ -56,6 +56,7 @@ namespace Ozora_Playgrounds.Pages
                 default:
                     break;
             }
+            OzoraInterface.Instance.LaunchNewActivity();
         }
     }
 }

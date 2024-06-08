@@ -15,6 +15,8 @@ using Windows.Foundation.Collections;
 using Ozora;
 using System.Numerics;
 using System.Drawing;
+using Microsoft.UI.Xaml.Hosting;
+using Microsoft.UI.Composition;
 
 namespace Ozora_Playgrounds.Pages
 {
@@ -30,27 +32,34 @@ namespace Ozora_Playgrounds.Pages
 
         private void CloudsGrid_Loaded(object sender, RoutedEventArgs e)
         {
+            OzoraInterface.Instance.UIDispatcherQueue = Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread();
+            OzoraInterface.Instance.CloudGrid = CloudsGrid;
+
             Ozora.Initializer initializer = new();
             Ozora.CloudSettings settings = new()
             {
                 AreaWidth = CloudsGrid.ActualWidth,
                 AreaHeight = CloudsGrid.ActualHeight,
-                ImageWidth = 50,
-                ImageHeight = 50,
-                DensityModifier = 4
+                ImageWidth = 100,
+                ImageHeight = 100,
+                DensityModifier = 5
             };
             System.Numerics.Vector3[] _vectorsList = initializer.GenerateCloudPositions(settings);
 
+            
+            Random rnd = new Random();
             foreach (Vector3 position in _vectorsList)
             {
                 Microsoft.UI.Xaml.Shapes.Rectangle rect = new();
-                rect.Height = 50;
-                rect.Width = 50;
-                rect.RadiusX = 25;
-                rect.RadiusY = 25;
+                rect.Height = 100;
+                rect.Width = 100;
+                //rect.RadiusX = 50;
+                //rect.RadiusY = 50;
                 rect.HorizontalAlignment = HorizontalAlignment.Left;
                 rect.VerticalAlignment = VerticalAlignment.Top;
                 rect.Translation = position;
+                rect.CenterPoint = new Vector3(50, 50, 0);
+                rect.Rotation = rnd.Next(90);
                 rect.Fill = new SolidColorBrush(Microsoft.UI.Colors.White);
                 CloudsGrid.Children.Add(rect);
                 rect.Opacity = 0.5;

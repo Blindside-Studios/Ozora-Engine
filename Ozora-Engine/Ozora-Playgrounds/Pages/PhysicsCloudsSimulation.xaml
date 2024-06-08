@@ -6,12 +6,21 @@
     xmlns:local="using:Ozora_Playgrounds.Pages"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:media="using:Microsoft.UI.Xaml.Media"
     mc:Ignorable="d"
     Background="Blue">
 
     <Grid>
         <Grid x:Name="CloudsGrid" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
-        <Rectangle/>
+        <Rectangle Opacity="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="400,10,10,10">
+            <Rectangle.Fill>
+                <media:AcrylicBrush
+                    x:Name="VibrantAcrylicBrush"
+                    TintColor="#FFFFFF"
+                    TintOpacity="0"
+                    TintLuminosityOpacity="0.1" />
+            </Rectangle.Fill>
+        </Rectangle>
         <TextBlock Text="CLOOOOUUUUDS"/>
     </Grid>
 </Page>

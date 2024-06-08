@@ -29,6 +29,9 @@ namespace Ozora
                 _vectorsList[i] = _spawnVector;
             }
 
+            OzoraInterface.Instance.ObjectWidth = preferences.ImageWidth;
+            OzoraInterface.Instance.ObjectHeight = preferences.ImageHeight;
+
             return _vectorsList;
         }
     }
