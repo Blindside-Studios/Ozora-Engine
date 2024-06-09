@@ -23,10 +23,10 @@ namespace Ozora_Playgrounds.Pages
             this.InitializeComponent();
             BodyViewPort.NavigateToType(typeof(PhysicsSunSimulation), null, null);
             StateOverlay.NavigateToType(typeof(ControlsOverlay), null, null);
-            OzoraSettings.Instance.SimulationStyleChanged += Instance_SimulationStyleChanged;
+            //OzoraSettings.Instance.SimulationStyleChanged += Instance_SimulationStyleChanged;
         }
 
-        private void Instance_SimulationStyleChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        /*private void Instance_SimulationStyleChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             switch (OzoraSettings.Instance.SimulationStyle)
             {
@@ -37,6 +37,6 @@ namespace Ozora_Playgrounds.Pages
                     BodyViewPort.NavigateToType(typeof(PhysicsCloudsSimulation), null, null);
                     break;
             }
-        }
+        }*/
     }
 }

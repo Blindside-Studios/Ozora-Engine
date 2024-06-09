@@ -15,40 +15,51 @@ using Windows.UI.WebUI;
 
 namespace Ozora
 {
-    internal class Physics
+    public class Physics
     {
+        public event EventHandler<ObjectPositionUpdatedEvent> ObjectPositionCalculated;
+        private void VectorUpdated(Vector3 newVector) { ObjectPositionCalculated?.Invoke(this, new ObjectPositionUpdatedEvent(newVector)); }
+
+        public void InterruptSimulation()
+        {
+            AnimateActivity = false;
+        }
+
+        public Windows.Foundation.Point CursorPosition
+        {
+            get => _cusorPosition;
+            set
+            {
+                _cusorPosition = value;
+                AnimateActivity = true;
+            }
+        }
+        private Windows.Foundation.Point _cusorPosition;
+
+        internal OzoraSettings Settings { get; set; }
+        internal OzoraInterface Interface { get; set; }
+
+
+
         private static Timer _timer;
-        private int interval = 1000 / Ozora.OzoraSettings.Instance.FrameRate;
 
         private VectorState _vectorState = new VectorState() { RateOfChange = new Vector3(0, 0, 0) };
 
-        public static Physics Instance
-        {
-            get
-            {
-                if (_instance == null)
-                {
-                    _instance = new Physics();
-                }
-                return _instance;
-            }
-        }
-        private static Physics _instance;
 
-        public bool AnimateActivity
+        private bool AnimateActivity
         {
             set
             {
                 if (value == true && _animateActivity == false)
                 {
                     _animateActivity = true;
-                    switch (OzoraSettings.Instance.SimulationStyle)
+                    switch (Settings.SimulationStyle)
                     {
                         case SimulationStyle.Sun:
-                            _timer = new Timer(AnimateSunObject, null, 0, interval);
+                            _timer = new Timer(AnimateSunObject, null, 0, 1000 / Settings.FrameRate);
                             break;
                         case SimulationStyle.Clouds:
-                            _timer = new Timer(AnimateCloudsObject, null, 0, interval);
+                            _timer = new Timer(AnimateCloudsObject, null, 0, 1000 / Settings.FrameRate);
                             break;
                     }
                 }
@@ -64,21 +75,21 @@ namespace Ozora
 
         private void AnimateSunObject(object state)
         {
-            Vector2 cursorPosition = new Vector2((float)OzoraInterface.Instance.PointerLocation.X, (float)OzoraInterface.Instance.PointerLocation.Y);
+            Vector2 cursorPosition = new Vector2((float)CursorPosition.X, (float)CursorPosition.Y);
             Vector2 elementPosition = new Vector2(
-                (float)(OzoraInterface.Instance.ObjectTranslation.X + OzoraInterface.Instance.ObjectWidth / 2),
-                (float)(OzoraInterface.Instance.ObjectTranslation.Y + OzoraInterface.Instance.ObjectHeight / 2));
+                (float)(_vectorState.LastTranslation.X + Interface.ObjectWidth / 2),
+                (float)(_vectorState.LastTranslation.Y + Interface.ObjectHeight / 2));
 
             Vector2 direction = cursorPosition - elementPosition;
 
-            direction.X = direction.X * (float)OzoraSettings.Instance.RubberBandingModifier;
-            direction.Y = direction.Y * (float)OzoraSettings.Instance.RubberBandingModifier;
+            direction.X = direction.X * (float)Settings.RubberBandingModifier;
+            direction.Y = direction.Y * (float)Settings.RubberBandingModifier;
 
             Vector2 _deltaVector = new Vector2(direction.X - _vectorState.RateOfChange.X, direction.Y - _vectorState.RateOfChange.Y);
 
-            if (_deltaVector.Length() > OzoraSettings.Instance.MaxVectorDeltaPerFrame)
+            if (_deltaVector.Length() > Settings.MaxVectorDeltaPerFrame)
             {
-                _deltaVector = Vector2.Normalize(_deltaVector) * (float)OzoraSettings.Instance.MaxVectorDeltaPerFrame;
+                _deltaVector = Vector2.Normalize(_deltaVector) * (float)Settings.MaxVectorDeltaPerFrame;
             }
 
             Vector3 _deltaVector3 = new Vector3(_deltaVector, 0);
@@ -89,28 +100,27 @@ namespace Ozora
             _vectorState.RateOfChange = new Vector3(direction, 0);
 
             Vector3 _finalTranslation = new Vector3(
-                (float)(elementPosition.X + direction.X - OzoraInterface.Instance.ObjectWidth / 2),
-                (float)(elementPosition.Y + direction.Y - OzoraInterface.Instance.ObjectHeight / 2), 0);
+                (float)(elementPosition.X + direction.X - Interface.ObjectWidth / 2),
+                (float)(elementPosition.Y + direction.Y - Interface.ObjectHeight / 2), 0);
 
-            OzoraInterface.Instance.ObjectTranslation = _finalTranslation;
+            _vectorState.LastTranslation = _finalTranslation;
+            VectorUpdated(_finalTranslation);
 
-            // check may be removed as this becomes a non-variable
-            if (1000 / Ozora.OzoraSettings.Instance.FrameRate != interval) { AnimateActivity = false; interval = 1000 / Ozora.OzoraSettings.Instance.FrameRate; }
             if (direction.Length() < 0.0001) { AnimateActivity = false; Debug.WriteLine("Animation cancelled"); }
         }
 
         private void AnimateCloudsObject(object state)
         {
-            if (OzoraInterface.Instance.CloudGrid != null && OzoraInterface.Instance.UIDispatcherQueue != null)
+            if (Interface.CloudGrid != null && Interface.UIDispatcherQueue != null)
             {
-                OzoraInterface.Instance.UIDispatcherQueue.TryEnqueue(() =>
+                Interface.UIDispatcherQueue.TryEnqueue(() =>
                 {
-                    foreach (UIElement element in OzoraInterface.Instance.CloudGrid.Children)
+                    foreach (UIElement element in Interface.CloudGrid.Children)
                     {
                         Vector2 _cloudCoordinate = new Vector2(
-                            element.Translation.X + (float)OzoraInterface.Instance.ObjectWidth,
-                            element.Translation.Y + (float)OzoraInterface.Instance.ObjectHeight);
-                        Vector2 _cursorPosition = OzoraInterface.Instance.PointerLocation.ToVector2();
+                            element.Translation.X + (float)Interface.ObjectWidth,
+                            element.Translation.Y + (float)Interface.ObjectHeight);
+                        Vector2 _cursorPosition = Interface.PointerLocation.ToVector2();
 
                         Vector2 _distanceVector = _cloudCoordinate - _cursorPosition;
 
@@ -122,11 +132,9 @@ namespace Ozora
                         element.Opacity = 1 - _opacityCaluclation;
                     }
                     
-                    if (1000 / Ozora.OzoraSettings.Instance.FrameRate != interval) { AnimateActivity = false; interval = 1000 / Ozora.OzoraSettings.Instance.FrameRate; }
-
                     // if cursor position remains unchanged, stop updating
-                    if (_vectorState.PointerPosition == OzoraInterface.Instance.PointerLocation) { AnimateActivity = false; Debug.WriteLine("Animation cancelled"); }
-                    _vectorState.PointerPosition = OzoraInterface.Instance.PointerLocation;
+                    if (_vectorState.PointerPosition == CursorPosition) { AnimateActivity = false; Debug.WriteLine("Animation cancelled"); }
+                    _vectorState.PointerPosition = CursorPosition;
                 });
             }
         }
@@ -135,6 +143,17 @@ namespace Ozora
     internal class VectorState
     {
         public Vector3 RateOfChange { get; set; }
+        public Vector3 LastTranslation { get; set; }
         public Windows.Foundation.Point PointerPosition { get; set; }
+    }
+
+    public class ObjectPositionUpdatedEvent : EventArgs
+    {
+        public ObjectPositionUpdatedEvent(Vector3 newVector)
+        {
+            NewTranslationVector = newVector;
+        }
+
+        public Vector3 NewTranslationVector { get; set; }
     }
 }

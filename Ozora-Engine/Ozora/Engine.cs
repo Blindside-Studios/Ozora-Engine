@@ -15,29 +15,73 @@ using Microsoft.UI.Dispatching;
 
 namespace Ozora
 {
-    public class OzoraEngine: INotifyPropertyChanged
+    public class OzoraEngine
     {
-        public static OzoraEngine Instance
+        public OzoraInterface Interface { get; set; }
+        
+        public Physics Physics = new Physics();
+        public void InitializePhysicsSimulation()
+        {
+            Physics.Settings = Interface.Settings;
+            Physics.Interface = Interface;
+            Interface.PointerPositionUpdated += Interface_PointerPositionUpdated;
+        }
+
+        private void Interface_PointerPositionUpdated(object sender, PointerPositionUpdatedEvent e)
+        {
+            Physics.CursorPosition = Interface.PointerLocation;
+        }
+    }
+
+    public class OzoraInterface: INotifyPropertyChanged
+    {
+        public OzoraSettings Settings { get; set; }
+
+        public DispatcherQueue UIDispatcherQueue;
+
+
+        public Windows.Foundation.Point PointerLocation 
+        {
+            get => _pointerLocation;
+            set
+            {
+                if (_pointerLocation != value)
+                {
+                    _pointerLocation = value;
+                    PointerLocationChanged(value);
+                }
+            }
+        }
+        private Windows.Foundation.Point _pointerLocation;
+
+        internal event EventHandler<PointerPositionUpdatedEvent> PointerPositionUpdated;
+        private void PointerLocationChanged(Windows.Foundation.Point newVector) { PointerPositionUpdated?.Invoke(this, new PointerPositionUpdatedEvent(newVector)); }
+
+
+        
+        public double ObjectWidth
         {
             get
             {
-                if (_instance == null)
-                {
-                    _instance = new OzoraEngine();
-                }
-                return _instance;
+                return _objectWidth;
             }
+            set { SetField(ref _objectWidth, value); }
         }
-        private static OzoraEngine _instance;
+        private double _objectWidth;
 
-        public OzoraSettings Settings
+        public double ObjectHeight
         {
-            get { return _settings; }
-            set { SetField(ref _settings, value); }
+            get
+            {
+                return _objectHeight;
+            }
+            set { SetField(ref _objectHeight, value); }
         }
-        private OzoraSettings _settings;
+        private double _objectHeight;
 
-        // Boilerplate code for INotifyPropertyChanged event
+        public Grid CloudGrid { get; set; }
+
+
         public event PropertyChangedEventHandler PropertyChanged;
         protected virtual void OnPropertyChanged(string propertyName)
         {
@@ -52,95 +96,9 @@ namespace Ozora
         }
     }
 
-    public class OzoraInterface: INotifyPropertyChanged
-    {
-        public static OzoraInterface Instance
-        {
-            get
-            {
-                if (_instance == null)
-                {
-                    _instance = new OzoraInterface();
-                }
-                return _instance;
-            }
-        }
-        private static OzoraInterface _instance;
-
-        public DispatcherQueue UIDispatcherQueue;
-
-        public void LaunchNewActivity()
-        {
-            Ozora.Physics.Instance.AnimateActivity = false;
-        }
-
-        public Windows.Foundation.Point PointerLocation 
-        {
-            get => _pointerLocation;
-            set
-            {
-                if (_pointerLocation != value)
-                {
-                    _pointerLocation = value;
-                    OnPropertyChanged(nameof(PointerLocation));
-                    Ozora.Physics.Instance.AnimateActivity = true;
-                }
-            }
-        }
-        private Windows.Foundation.Point _pointerLocation;
-
-        public double ObjectWidth { get; set; }
-        public double ObjectHeight { get; set; }
-
-        public event Action<Vector3> UpdateObjectTranslationRequested;
-        public Vector3 ObjectTranslation
-        {
-            get => _objectTranslation;
-            set
-            {
-                _objectTranslation = value;
-                UpdateObjectTranslationRequested?.Invoke(value);
-            }
-        }
-        private Vector3 _objectTranslation;
-
-        public double ObjectRotation
-        {
-            get => _objectRotation;
-            set
-            {
-                _objectRotation = value;
-                OnPropertyChanged(nameof(ObjectRotation));
-            }
-        }
-        private double _objectRotation;
-
-        public Grid CloudGrid { get; set; }
-
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-    }
-
     public class OzoraSettings: INotifyPropertyChanged
     {
         Ozora.DefaultValues defaults = new Ozora.DefaultValues();
-
-        public static OzoraSettings Instance
-        {
-            get
-            {
-                if (_instance == null)
-                {
-                    _instance = new OzoraSettings();
-                }
-                return _instance;
-            }
-        }
-        private static OzoraSettings _instance;
 
         public SimulationStyle SimulationStyle
         {
@@ -229,5 +187,15 @@ namespace Ozora
     {
         Sun,
         Clouds
+    }
+
+    public class PointerPositionUpdatedEvent : EventArgs
+    {
+        public PointerPositionUpdatedEvent(Windows.Foundation.Point newPosition)
+        {
+            NewPoint = newPosition;
+        }
+
+        public Windows.Foundation.Point NewPoint { get; set; }
     }
 }

@@ -14,6 +14,7 @@ using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Ozora;
 using Ozora_Playgrounds.Pages;
+using System.ComponentModel;
 
 namespace Ozora_Playgrounds
 {
@@ -27,7 +28,44 @@ namespace Ozora_Playgrounds
 
         private void ViewPort_PointerMoved(object sender, PointerRoutedEventArgs e)
         {
-            OzoraInterface.Instance.PointerLocation = e.GetCurrentPoint(ViewPort).Position;
+            MouseViewModel.Instance.MousePosition = e.GetCurrentPoint(ViewPort).Position;
+        }
+    }
+
+    public class MouseViewModel: INotifyPropertyChanged
+    {
+        private static MouseViewModel _instance;
+        public static MouseViewModel Instance
+        {
+            get
+            {
+                if (_instance == null)
+                {
+                    _instance = new MouseViewModel();
+                }
+                return _instance;
+            }
+        }
+
+        public Windows.Foundation.Point MousePosition
+        {
+            get => _mousePosition;
+            set
+            {
+                if (_mousePosition != value)
+                {
+                    _mousePosition = value;
+                    OnPropertyChanged(nameof(MousePosition));
+                }
+            }
+        }
+        private Windows.Foundation.Point _mousePosition;
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected virtual void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

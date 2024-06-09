@@ -18,19 +18,40 @@ namespace Ozora_Playgrounds.Pages
 {
     public sealed partial class PhysicsSunSimulation : Page
     {
+        OzoraEngine Ozora = new OzoraEngine();
+
         public PhysicsSunSimulation()
         {
             this.InitializeComponent();
-            OzoraInterface.Instance.ObjectWidth = SunObject.ActualWidth;
-            OzoraInterface.Instance.ObjectHeight = SunObject.ActualHeight;
-            OzoraInterface.Instance.UpdateObjectTranslationRequested += Instance_UpdateObjectTranslationRequested;
+
+            OzoraSettings SunSettings = new OzoraSettings()
+            {
+                FrameRate = 60,
+                MaxVectorDeltaPerFrame = 1,
+                RubberBandingModifier = 0.05
+            };
+
+            Ozora.Interface = new OzoraInterface()
+            {
+                ObjectWidth = SunObject.ActualWidth,
+                ObjectHeight = SunObject.ActualHeight,
+                Settings = SunSettings
+            };
+            Ozora.InitializePhysicsSimulation();
+            Ozora.Physics.ObjectPositionCalculated += Physics_ObjectPositionCalculated;
+            MouseViewModel.Instance.PropertyChanged += Instance_PropertyChanged;
         }
 
-        private void Instance_UpdateObjectTranslationRequested(System.Numerics.Vector3 obj)
+        private void Instance_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            Ozora.Interface.PointerLocation = MouseViewModel.Instance.MousePosition;
+        }
+
+        private void Physics_ObjectPositionCalculated(object sender, ObjectPositionUpdatedEvent e)
         {
             DispatcherQueue.TryEnqueue(() =>
             {
-                this.SunObject.Translation = obj;
+                this.SunObject.Translation = e.NewTranslationVector;
             });
         }
     }

@@ -38,7 +38,7 @@ namespace Ozora_Playgrounds.Pages
 
         private void loadClouds()
         {
-            CloudsGrid.Children.Clear();
+            /*CloudsGrid.Children.Clear();
 
             OzoraInterface.Instance.UIDispatcherQueue = Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread();
             OzoraInterface.Instance.CloudGrid = CloudsGrid;
@@ -72,7 +72,7 @@ namespace Ozora_Playgrounds.Pages
 
                 CloudsGrid.Children.Add(cloud);
                 cloud.Opacity = 0.5;
-            }
+            }*/
         }
 
         private void CloudsGrid_SizeChanged(object sender, SizeChangedEventArgs e)

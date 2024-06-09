@@ -21,30 +21,30 @@ namespace Ozora_Playgrounds.Pages
         public ControlsOverlay()
         {
             this.InitializeComponent();
-            Ozora.DefaultValues defaults = new Ozora.DefaultValues();
+            /*Ozora.DefaultValues defaults = new Ozora.DefaultValues();
             FrameRateSlider.Value = defaults.FrameRate;
             MaxVectorDeltaSlider.Value = defaults.MaxVectorDeltaPerFrame;
-            RubberBandingSlider.Value = defaults.RubberBandingModifier;
+            RubberBandingSlider.Value = defaults.RubberBandingModifier;*/
         }
 
         private void FrameRateSlider_ValueChanged(object sender, RangeBaseValueChangedEventArgs e)
         {
-            OzoraSettings.Instance.FrameRate = (int)e.NewValue;
+            //OzoraSettings.Instance.FrameRate = (int)e.NewValue;
         }
 
         private void MaxVectorDeltaSlider_ValueChanged(object sender, RangeBaseValueChangedEventArgs e)
         {
-            OzoraSettings.Instance.MaxVectorDeltaPerFrame = (double)e.NewValue;
+            //OzoraSettings.Instance.MaxVectorDeltaPerFrame = (double)e.NewValue;
         }
 
         private void RubberBandingSlider_ValueChanged(object sender, RangeBaseValueChangedEventArgs e)
         {
-            OzoraSettings.Instance.RubberBandingModifier = (double)e.NewValue;
+            //OzoraSettings.Instance.RubberBandingModifier = (double)e.NewValue;
         }
 
         private void SimulationPickerComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            ComboBox _comboBox = (ComboBox)sender;
+            /*ComboBox _comboBox = (ComboBox)sender;
             switch (_comboBox.SelectedIndex)
             {
                 case 0:
@@ -56,7 +56,7 @@ namespace Ozora_Playgrounds.Pages
                 default:
                     break;
             }
-            OzoraInterface.Instance.LaunchNewActivity();
+            OzoraInterface.Instance.LaunchNewActivity();*/
         }
     }
 }

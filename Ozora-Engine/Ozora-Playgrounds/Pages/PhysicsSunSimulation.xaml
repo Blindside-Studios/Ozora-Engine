@@ -10,6 +10,6 @@
     mc:Ignorable="d">
 
     <Grid>
-        <Rectangle x:Name="SunObject" Fill="Yellow" Height="100" Width="100" RadiusX="50" HorizontalAlignment="Left" VerticalAlignment="Top" RadiusY="50" Translation="{x:Bind ozora:OzoraInterface.Instance.ObjectTranslation, Mode=OneWay}"/>
+        <Rectangle x:Name="SunObject" Fill="Yellow" Height="100" Width="100" RadiusX="50" HorizontalAlignment="Left" VerticalAlignment="Top" RadiusY="50"/>
     </Grid>
 </Page>
