@@ -114,7 +114,7 @@ namespace Ozora
                 (float)(elementPosition.Y + direction.Y - Interface.ObjectHeight / 2), 0);
 
 
-            // collision detection
+            // Collision detection
             if (Interface.Settings.EnableBorderCollision)
             {
                 if (_finalTranslation.X < 0)
@@ -148,13 +148,17 @@ namespace Ozora
                 }
             }
 
+            // check if target FrameRate was updated
+            if (Interface.Settings.FrameRate != _lastFrameRate) { AnimateActivity = false; }
+
+
+            // check movement delta to cancel animation if it got too small
+            Vector3 _movedDistance = _finalTranslation - _vectorState.LastTranslation;
+            if (_movedDistance.Length() < 0.0001) { AnimateActivity = false; Debug.WriteLine("Animation cancelled"); }
+
             _vectorState.RateOfChange = new Vector3(direction, 0);
             _vectorState.LastTranslation = _finalTranslation;
             VectorUpdated(_finalTranslation);
-
-            // check may be removed as this becomes a non-variable
-            if (Interface.Settings.FrameRate != _lastFrameRate) { AnimateActivity = false; }
-            if (direction.Length() < 0.0001) { AnimateActivity = false; Debug.WriteLine("Animation cancelled"); }
         }
 
         private void AnimateCloudsObject(object state)
