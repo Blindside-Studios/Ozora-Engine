@@ -14,6 +14,7 @@ using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Ozora;
 using System.ComponentModel;
+using System.Diagnostics;
 
 namespace Ozora_Playgrounds.Pages
 {
@@ -75,6 +76,11 @@ namespace Ozora_Playgrounds.Pages
         private void BounceMomentumRetentionSlider_ValueChanged(object sender, RangeBaseValueChangedEventArgs e)
         {
             ControlPanelViewModel.Instance.BounceMomentumRetention = (double)e.NewValue;
+        }
+
+        private void TrailingDragCoefficientSlider_ValueChanged(object sender, RangeBaseValueChangedEventArgs e)
+        {
+            ControlPanelViewModel.Instance.TrailingDragCoefficient = TrailingDragCoefficientSlider.Value;
         }
     }
 
@@ -177,6 +183,20 @@ namespace Ozora_Playgrounds.Pages
             }
         }
         private double _bounceMomentumRetention;
+
+        public double TrailingDragCoefficient
+        {
+            get => _trailingDragCoefficient;
+            set
+            {
+                if (value != _trailingDragCoefficient)
+                {
+                    _trailingDragCoefficient = value;
+                    OnPropertyChanged(nameof(TrailingDragCoefficient));
+                }
+            }
+        }
+        private double _trailingDragCoefficient;
 
 
         public event PropertyChangedEventHandler PropertyChanged;

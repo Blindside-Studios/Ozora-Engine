@@ -48,14 +48,14 @@ namespace Ozora_Playgrounds.Pages
             };
 
             Ozora.Physics.ObjectPositionCalculated += Physics_ObjectPositionCalculated;
-            MouseViewModel.Instance.PropertyChanged += Instance_PropertyChanged;
+            MouseViewModel.Instance.PropertyChanged += MouseViewModel_PropertyChanged;
 
             Ozora.Physics.StartSimulation();
 
-            ControlPanelViewModel.Instance.PropertyChanged += Instance_PropertyChanged1;
+            ControlPanelViewModel.Instance.PropertyChanged += ControlPanelViewModel_PropertyChanged1;
         }
 
-        private void Instance_PropertyChanged1(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        private void ControlPanelViewModel_PropertyChanged1(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             Ozora.Physics.Interface.Settings.FrameRate = ControlPanelViewModel.Instance.FrameRate;
             Ozora.Physics.Interface.Settings.MaxVectorDeltaPerFrame = ControlPanelViewModel.Instance.MaxVectorDelta;
@@ -63,11 +63,13 @@ namespace Ozora_Playgrounds.Pages
             Ozora.Physics.Interface.Settings.EnableBorderCollision = ControlPanelViewModel.Instance.EnableBorderCollisions;
             Ozora.Physics.Interface.Settings.EnableBounceOnCollision = ControlPanelViewModel.Instance.EnableBounceOnCollision;
             Ozora.Physics.Interface.Settings.BounceMomentumRetention = ControlPanelViewModel.Instance.BounceMomentumRetention;
+            Ozora.Physics.Interface.Settings.TrailingDragCoefficient = ControlPanelViewModel.Instance.TrailingDragCoefficient;
         }
 
-        private void Instance_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        private void MouseViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             Ozora.Physics.Interface.PointerLocation = MouseViewModel.Instance.MousePosition;
+            Ozora.Physics.MouseCursorEngaged = MouseViewModel.Instance.EngageMouse;
         }
 
         private void Physics_ObjectPositionCalculated(object sender, ObjectPositionUpdatedEvent e)

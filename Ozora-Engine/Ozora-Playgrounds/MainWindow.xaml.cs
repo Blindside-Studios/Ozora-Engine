@@ -24,11 +24,22 @@ namespace Ozora_Playgrounds
         {
             this.InitializeComponent();
             ViewPort.NavigateToType(typeof(PhysicsViewPort), null, null);
+            MouseViewModel.Instance.EngageMouse = true;
         }
 
         private void ViewPort_PointerMoved(object sender, PointerRoutedEventArgs e)
         {
             MouseViewModel.Instance.MousePosition = e.GetCurrentPoint(ViewPort).Position;
+        }
+
+        private void ViewPort_PointerEntered(object sender, PointerRoutedEventArgs e)
+        {
+            MouseViewModel.Instance.EngageMouse = true;
+        }
+
+        private void ViewPort_PointerExited(object sender, PointerRoutedEventArgs e)
+        {
+            MouseViewModel.Instance.EngageMouse = false;
         }
     }
 
@@ -60,6 +71,20 @@ namespace Ozora_Playgrounds
             }
         }
         private Windows.Foundation.Point _mousePosition;
+
+        public bool EngageMouse
+        {
+            get => _engageMouse;
+            set
+            {
+                if (_engageMouse != value)
+                {
+                    _engageMouse = value;
+                    OnPropertyChanged(nameof(EngageMouse));
+                }
+            }
+        }
+        private bool _engageMouse;
 
         public event PropertyChangedEventHandler PropertyChanged;
 

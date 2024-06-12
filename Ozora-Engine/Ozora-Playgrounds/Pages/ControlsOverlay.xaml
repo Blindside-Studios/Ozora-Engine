@@ -21,9 +21,10 @@
                 <Slider x:Name="FrameRateSlider" Minimum="1" Maximum="120" Header="Framerate" ValueChanged="FrameRateSlider_ValueChanged"/>
                 <Slider x:Name="MaxVectorDeltaSlider" Header="Max Vector Delta" Minimum="0.1" Maximum="10" StepFrequency="0.1" SmallChange="0.1" ValueChanged="MaxVectorDeltaSlider_ValueChanged"/>
                 <Slider x:Name="RubberBandingSlider" Header="Rubber Banding Factor (Max Speed)" Minimum="0.01" Maximum="0.5" StepFrequency="0.01" SmallChange="0.01" ValueChanged="RubberBandingSlider_ValueChanged"/>
-                <ToggleSwitch x:Name="EnableBorderCollisionToggle" Header="Enable collisions with the border" Toggled="EnableBorderCollisionToggle_Toggled"/>
-                <ToggleSwitch x:Name="EnableCollisionBounceToggle" Header="Enable bounce on collision" Toggled="EnableCollisionBounceToggle_Toggled"/>
+                <ToggleSwitch x:Name="EnableBorderCollisionToggle" Header="Enable Collisions With The Border" Toggled="EnableBorderCollisionToggle_Toggled"/>
+                <ToggleSwitch x:Name="EnableCollisionBounceToggle" Header="Enable Bounce On Collision" Toggled="EnableCollisionBounceToggle_Toggled"/>
                 <Slider x:Name="BounceMomentumRetentionSlider" Header="Bounce Momentum Retention Modifier" Minimum="0.05" Maximum="1" StepFrequency="0.05" SmallChange="0.05" LargeChange="0.2" ValueChanged="BounceMomentumRetentionSlider_ValueChanged"/>
+                <Slider x:Name="TrailingDragCoefficientSlider" Header="Trailing Drag Coefficient" Minimum="0" Maximum="0.35" StepFrequency="0.01" SmallChange="0.001" LargeChange="0.05" ValueChanged="TrailingDragCoefficientSlider_ValueChanged"/>
             </StackPanel>
         </ScrollView>
     </Grid>

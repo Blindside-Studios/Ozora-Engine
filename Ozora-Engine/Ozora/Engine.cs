@@ -155,6 +155,13 @@ namespace Ozora
         }
         private double _rubberBandingModifier;
 
+        public double TrailingDragCoefficient
+        {
+            get => _trailingDragCoefficient;
+            set { SetField(ref _trailingDragCoefficient, value); }
+        }
+        private double _trailingDragCoefficient;
+
         /*public int MaxTrailingSpeed
         {
             get { return _maxTrailingSpeed; }

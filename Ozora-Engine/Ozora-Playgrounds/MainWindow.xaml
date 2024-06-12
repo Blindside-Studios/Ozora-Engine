@@ -9,5 +9,5 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
-    <Frame x:Name="ViewPort" Margin="20" PointerMoved="ViewPort_PointerMoved"/>
+    <Frame x:Name="ViewPort" Margin="20" PointerMoved="ViewPort_PointerMoved" PointerEntered="ViewPort_PointerEntered" PointerExited="ViewPort_PointerExited"/>
 </Window>

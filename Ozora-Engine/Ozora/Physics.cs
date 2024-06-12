@@ -44,6 +44,8 @@ namespace Ozora
             if (Interface != null) Interface.PointerPositionUpdated += Interface_PointerPositionUpdated;
         }
 
+        public bool MouseCursorEngaged = true;
+
         private void Interface_PointerPositionUpdated(object sender, PointerPositionUpdatedEvent e)
         {
             CursorPosition = Interface.PointerLocation;
@@ -59,14 +61,19 @@ namespace Ozora
         {
             set
             {
-                if (value == true && _animateActivity == false && Interface != null)
+                /// This may be continuously set on each pointer update, therefore check for
+                /// !_animateActivity, to not restart the same timer over and over again.
+                /// Also, this is only necessary if the mouse cursor is engaged - however,
+                /// this will still be run if the mouse is disengaged but a new PointerPosition
+                /// is recognized, which would be pointless. Therefore, we are not doing it.
+                if (value == true && MouseCursorEngaged && !_animateActivity && Interface != null)
                 {
                     _animateActivity = true;
                     _lastFrameRate = Interface.Settings.FrameRate;
                     switch (Interface.Settings.SimulationStyle)
                     {
                         case SimulationStyle.Sun:
-                            _timer = new Timer(AnimateSunObject, null, 0, 1000 / Interface.Settings.FrameRate);
+                            if (MouseCursorEngaged) _timer = new Timer(AnimateSunObject, null, 0, 1000 / Interface.Settings.FrameRate);
                             break;
                         case SimulationStyle.Clouds:
                             _timer = new Timer(AnimateCloudsObject, null, 0, 1000 / Interface.Settings.FrameRate);
@@ -90,22 +97,36 @@ namespace Ozora
                 (float)(_vectorState.LastTranslation.X + Interface.ObjectWidth / 2),
                 (float)(_vectorState.LastTranslation.Y + Interface.ObjectHeight / 2));
 
-            Vector2 direction = cursorPosition - elementPosition;
+            Vector2 direction;
 
-            direction.X = direction.X * (float)Interface.Settings.RubberBandingModifier;
-            direction.Y = direction.Y * (float)Interface.Settings.RubberBandingModifier;
-
-            Vector2 _deltaVector = new Vector2(direction.X - _vectorState.RateOfChange.X, direction.Y - _vectorState.RateOfChange.Y);
-
-            if (_deltaVector.Length() > Interface.Settings.MaxVectorDeltaPerFrame)
+            if (MouseCursorEngaged)
             {
-                _deltaVector = Vector2.Normalize(_deltaVector) * (float)Interface.Settings.MaxVectorDeltaPerFrame;
-            }
+                // Object chases the mouse cursor
+                direction = cursorPosition - elementPosition;
+                direction.X = direction.X * (float)Interface.Settings.RubberBandingModifier;
+                direction.Y = direction.Y * (float)Interface.Settings.RubberBandingModifier;
 
-            Vector3 _deltaVector3 = new Vector3(_deltaVector, 0);
-            direction = new Vector2(
-                _vectorState.RateOfChange.X + _deltaVector.X,
-                _vectorState.RateOfChange.Y + _deltaVector.Y);
+                Vector2 _deltaVector = new Vector2(direction.X - _vectorState.RateOfChange.X, direction.Y - _vectorState.RateOfChange.Y);
+
+                if (_deltaVector.Length() > Interface.Settings.MaxVectorDeltaPerFrame)
+                {
+                    _deltaVector = Vector2.Normalize(_deltaVector) * (float)Interface.Settings.MaxVectorDeltaPerFrame;
+                }
+
+                direction = new Vector2(
+                    _vectorState.RateOfChange.X + _deltaVector.X,
+                    _vectorState.RateOfChange.Y + _deltaVector.Y);
+            }
+            else
+            {
+                // Object uses its own kinetic energy for trailing
+                direction = new Vector2(_vectorState.RateOfChange.X, _vectorState.RateOfChange.Y);
+                if (Interface.Settings.TrailingDragCoefficient > 0)
+                {
+                    direction.X = direction.X * (float)(1 - Interface.Settings.TrailingDragCoefficient);
+                    direction.Y = direction.Y * (float)(1 - Interface.Settings.TrailingDragCoefficient);
+                }
+            }
 
             _vectorState.RateOfChange = new Vector3(direction, 0);
 
