@@ -26,25 +26,27 @@ namespace Ozora_Playgrounds.Pages
 
             OzoraSettings SunSettings = new OzoraSettings()
             {
+                SimulationStyle = SimulationStyle.Sun,
                 FrameRate = 60,
                 MaxVectorDeltaPerFrame = 1,
                 RubberBandingModifier = 0.05
             };
 
-            Ozora.Interface = new OzoraInterface()
+            Ozora.Physics.Interface = new OzoraInterface()
             {
                 ObjectWidth = SunObject.ActualWidth,
                 ObjectHeight = SunObject.ActualHeight,
                 Settings = SunSettings
             };
-            Ozora.InitializePhysicsSimulation();
             Ozora.Physics.ObjectPositionCalculated += Physics_ObjectPositionCalculated;
             MouseViewModel.Instance.PropertyChanged += Instance_PropertyChanged;
+
+            Ozora.Physics.StartSimulation();
         }
 
         private void Instance_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            Ozora.Interface.PointerLocation = MouseViewModel.Instance.MousePosition;
+            Ozora.Physics.Interface.PointerLocation = MouseViewModel.Instance.MousePosition;
         }
 
         private void Physics_ObjectPositionCalculated(object sender, ObjectPositionUpdatedEvent e)

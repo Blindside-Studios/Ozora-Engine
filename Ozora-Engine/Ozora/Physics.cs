@@ -27,19 +27,26 @@ namespace Ozora
 
         public Windows.Foundation.Point CursorPosition
         {
-            get => _cusorPosition;
+            get => _cursorPosition;
             set
             {
-                _cusorPosition = value;
+                _cursorPosition = value;
                 AnimateActivity = true;
             }
         }
-        private Windows.Foundation.Point _cusorPosition;
+        private Windows.Foundation.Point _cursorPosition;
 
-        internal OzoraSettings Settings { get; set; }
-        internal OzoraInterface Interface { get; set; }
+        public OzoraInterface Interface { get; set; }
 
+        public void StartSimulation()
+        {
+            Interface.PointerPositionUpdated += Interface_PointerPositionUpdated;
+        }
 
+        private void Interface_PointerPositionUpdated(object sender, PointerPositionUpdatedEvent e)
+        {
+            CursorPosition = Interface.PointerLocation;
+        }
 
         private static Timer _timer;
 
@@ -50,16 +57,16 @@ namespace Ozora
         {
             set
             {
-                if (value == true && _animateActivity == false)
+                if (value == true && _animateActivity == false && Interface != null)
                 {
                     _animateActivity = true;
-                    switch (Settings.SimulationStyle)
+                    switch (Interface.Settings.SimulationStyle)
                     {
                         case SimulationStyle.Sun:
-                            _timer = new Timer(AnimateSunObject, null, 0, 1000 / Settings.FrameRate);
+                            _timer = new Timer(AnimateSunObject, null, 0, 1000 / Interface.Settings.FrameRate);
                             break;
                         case SimulationStyle.Clouds:
-                            _timer = new Timer(AnimateCloudsObject, null, 0, 1000 / Settings.FrameRate);
+                            _timer = new Timer(AnimateCloudsObject, null, 0, 1000 / Interface.Settings.FrameRate);
                             break;
                     }
                 }
@@ -82,14 +89,14 @@ namespace Ozora
 
             Vector2 direction = cursorPosition - elementPosition;
 
-            direction.X = direction.X * (float)Settings.RubberBandingModifier;
-            direction.Y = direction.Y * (float)Settings.RubberBandingModifier;
+            direction.X = direction.X * (float)Interface.Settings.RubberBandingModifier;
+            direction.Y = direction.Y * (float)Interface.Settings.RubberBandingModifier;
 
             Vector2 _deltaVector = new Vector2(direction.X - _vectorState.RateOfChange.X, direction.Y - _vectorState.RateOfChange.Y);
 
-            if (_deltaVector.Length() > Settings.MaxVectorDeltaPerFrame)
+            if (_deltaVector.Length() > Interface.Settings.MaxVectorDeltaPerFrame)
             {
-                _deltaVector = Vector2.Normalize(_deltaVector) * (float)Settings.MaxVectorDeltaPerFrame;
+                _deltaVector = Vector2.Normalize(_deltaVector) * (float)Interface.Settings.MaxVectorDeltaPerFrame;
             }
 
             Vector3 _deltaVector3 = new Vector3(_deltaVector, 0);

@@ -16,21 +16,10 @@ using Microsoft.UI.Dispatching;
 namespace Ozora
 {
     public class OzoraEngine
-    {
-        public OzoraInterface Interface { get; set; }
-        
+    {        
         public Physics Physics = new Physics();
-        public void InitializePhysicsSimulation()
-        {
-            Physics.Settings = Interface.Settings;
-            Physics.Interface = Interface;
-            Interface.PointerPositionUpdated += Interface_PointerPositionUpdated;
-        }
-
-        private void Interface_PointerPositionUpdated(object sender, PointerPositionUpdatedEvent e)
-        {
-            Physics.CursorPosition = Interface.PointerLocation;
-        }
+        public Initializer Initializer = new Initializer();
+        public DefaultValues DefaultValues = new DefaultValues();
     }
 
     public class OzoraInterface: INotifyPropertyChanged
