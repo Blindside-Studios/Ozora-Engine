@@ -115,6 +115,14 @@ namespace Ozora
             _vectorState.LastTranslation = _finalTranslation;
             VectorUpdated(_finalTranslation);
 
+
+            // collision detection
+            if (Interface.Settings.EnableBorderCollision)
+            {
+                Debug.WriteLine("Collision is being checked");
+            }
+
+
             // check may be removed as this becomes a non-variable
             if (Interface.Settings.FrameRate != _lastFrameRate) { AnimateActivity = false; }
             if (direction.Length() < 0.0001) { AnimateActivity = false; Debug.WriteLine("Animation cancelled"); }

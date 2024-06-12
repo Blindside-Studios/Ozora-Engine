@@ -12,6 +12,6 @@
     <Grid>
         <Rectangle x:Name="BackgroundRectangle" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Fill="Red" Opacity="0"/>
         <Frame x:Name="BodyViewPort" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
-        <Frame x:Name="StateOverlay" HorizontalAlignment="Left" VerticalAlignment="Top" Height="400" Width="250"/>
+        <Frame x:Name="StateOverlay" HorizontalAlignment="Left" VerticalAlignment="Top" Height="500" Width="250"/>
     </Grid>
 </Page>

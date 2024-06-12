@@ -29,7 +29,10 @@ namespace Ozora_Playgrounds.Pages
                 SimulationStyle = SimulationStyle.Sun,
                 FrameRate = 60,
                 MaxVectorDeltaPerFrame = 1,
-                RubberBandingModifier = 0.05
+                RubberBandingModifier = 0.05,
+                EnableBorderCollision = false,
+                EnableBounceOnCollision = false,
+                BounceMomentumRetention = 0.5
             };
 
             Ozora.Physics.Interface = new OzoraInterface()
@@ -51,6 +54,9 @@ namespace Ozora_Playgrounds.Pages
             Ozora.Physics.Interface.Settings.FrameRate = ControlPanelViewModel.Instance.FrameRate;
             Ozora.Physics.Interface.Settings.MaxVectorDeltaPerFrame = ControlPanelViewModel.Instance.MaxVectorDelta;
             Ozora.Physics.Interface.Settings.RubberBandingModifier = ControlPanelViewModel.Instance.RubberBandingModifier;
+            Ozora.Physics.Interface.Settings.EnableBorderCollision = ControlPanelViewModel.Instance.EnableBorderCollisions;
+            Ozora.Physics.Interface.Settings.EnableBounceOnCollision = ControlPanelViewModel.Instance.EnableBounceOnCollision;
+            Ozora.Physics.Interface.Settings.BounceMomentumRetention = ControlPanelViewModel.Instance.BounceMomentumRetention;
         }
 
         private void Instance_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)

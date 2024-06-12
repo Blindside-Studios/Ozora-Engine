@@ -47,6 +47,20 @@ namespace Ozora
         private void PointerLocationChanged(Windows.Foundation.Point newVector) { PointerPositionUpdated?.Invoke(this, new PointerPositionUpdatedEvent(newVector)); }
 
 
+        public Windows.Foundation.Point AreaDimensions
+        {
+            get => _areaDimensions;
+            set
+            {
+                if (_areaDimensions != value)
+                {
+                    _areaDimensions = value;
+                    PointerLocationChanged(value);
+                }
+            }
+        }
+        private Windows.Foundation.Point _areaDimensions;
+
         
         public double ObjectWidth
         {
@@ -141,12 +155,37 @@ namespace Ozora
         }
         private double _rubberBandingModifier;
 
-        public int MaxTrailingSpeed
+        /*public int MaxTrailingSpeed
         {
             get { return _maxTrailingSpeed; }
             set { SetField(ref _maxTrailingSpeed, value); }
         }
-        private int _maxTrailingSpeed;
+        private int _maxTrailingSpeed;*/
+
+        public bool EnableBorderCollision
+        {
+            get { return _enableBorderCollision; }
+            set { SetField(ref _enableBorderCollision, value); }
+        }
+        private bool _enableBorderCollision;
+
+        public bool EnableBounceOnCollision
+        {
+            get { return _enableBounceOnCollision; }
+            set { SetField(ref _enableBounceOnCollision, value); }
+        }
+        private bool _enableBounceOnCollision;
+
+        public double BounceMomentumRetention
+        {
+            get 
+            {
+                if (_bounceMomentumRetention == 0) return defaults.BounceMomentumRetention;
+                else return _bounceMomentumRetention;
+            }
+            set { SetField(ref _bounceMomentumRetention, value); }
+        }
+        private double _bounceMomentumRetention;
 
 
         // Boilerplate code for INotifyPropertyChanged event

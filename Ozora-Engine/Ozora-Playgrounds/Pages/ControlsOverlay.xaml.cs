@@ -60,6 +60,21 @@ namespace Ozora_Playgrounds.Pages
             }
             OzoraInterface.Instance.LaunchNewActivity();*/
         }
+
+        private void EnableBorderCollisionToggle_Toggled(object sender, RoutedEventArgs e)
+        {
+            ControlPanelViewModel.Instance.EnableBorderCollisions = EnableBorderCollisionToggle.IsOn;
+        }
+
+        private void EnableCollisionBounceToggle_Toggled(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void BounceMomentumRetentionSlider_ValueChanged(object sender, RangeBaseValueChangedEventArgs e)
+        {
+
+        }
     }
 
     public class ControlPanelViewModel: INotifyPropertyChanged
@@ -120,6 +135,47 @@ namespace Ozora_Playgrounds.Pages
         }
         private double _rubberBandingModifier;
 
+        public bool EnableBorderCollisions
+        {
+            get => _enableBorderCollisions;
+            set
+            {
+                if (value != _enableBorderCollisions)
+                {
+                    _enableBorderCollisions = value;
+                    OnPropertyChanged(nameof(EnableBorderCollisions));
+                }
+            }
+        }
+        private bool _enableBorderCollisions;
+
+        public bool EnableBounceOnCollision
+        {
+            get => _enableBounceOnCollision;
+            set
+            {
+                if (value != _enableBounceOnCollision)
+                {
+                    _enableBounceOnCollision = value;
+                    OnPropertyChanged(nameof(EnableBorderCollisions));
+                }
+            }
+        }
+        private bool _enableBounceOnCollision;
+
+        public double BounceMomentumRetention
+        {
+            get => _bounceMomentumRetention;
+            set
+            {
+                if (value != _bounceMomentumRetention)
+                {
+                    _bounceMomentumRetention = value;
+                    OnPropertyChanged(nameof(BounceMomentumRetention));
+                }
+            }
+        }
+        private double _bounceMomentumRetention;
 
 
         public event PropertyChangedEventHandler PropertyChanged;
