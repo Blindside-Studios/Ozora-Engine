@@ -13,6 +13,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Ozora;
+using System.ComponentModel;
 
 namespace Ozora_Playgrounds.Pages
 {
@@ -21,25 +22,26 @@ namespace Ozora_Playgrounds.Pages
         public ControlsOverlay()
         {
             this.InitializeComponent();
-            /*Ozora.DefaultValues defaults = new Ozora.DefaultValues();
+
+            Ozora.DefaultValues defaults = new Ozora.DefaultValues();
             FrameRateSlider.Value = defaults.FrameRate;
             MaxVectorDeltaSlider.Value = defaults.MaxVectorDeltaPerFrame;
-            RubberBandingSlider.Value = defaults.RubberBandingModifier;*/
+            RubberBandingSlider.Value = defaults.RubberBandingModifier;
         }
 
         private void FrameRateSlider_ValueChanged(object sender, RangeBaseValueChangedEventArgs e)
         {
-            //OzoraSettings.Instance.FrameRate = (int)e.NewValue;
+            ControlPanelViewModel.Instance.FrameRate = (int)e.NewValue;
         }
 
         private void MaxVectorDeltaSlider_ValueChanged(object sender, RangeBaseValueChangedEventArgs e)
         {
-            //OzoraSettings.Instance.MaxVectorDeltaPerFrame = (double)e.NewValue;
+            ControlPanelViewModel.Instance.MaxVectorDelta = (double)e.NewValue;
         }
 
         private void RubberBandingSlider_ValueChanged(object sender, RangeBaseValueChangedEventArgs e)
         {
-            //OzoraSettings.Instance.RubberBandingModifier = (double)e.NewValue;
+            ControlPanelViewModel.Instance.RubberBandingModifier = (double)e.NewValue;
         }
 
         private void SimulationPickerComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -57,6 +59,73 @@ namespace Ozora_Playgrounds.Pages
                     break;
             }
             OzoraInterface.Instance.LaunchNewActivity();*/
+        }
+    }
+
+    public class ControlPanelViewModel: INotifyPropertyChanged
+    {
+        private static ControlPanelViewModel _instance;
+        public static ControlPanelViewModel Instance
+        {
+            get
+            {
+                if (_instance == null)
+                {
+                    _instance = new ControlPanelViewModel();
+                }
+                return _instance;
+            }
+        }
+
+
+        public int FrameRate
+        {
+            get => _frameRate;
+            set
+            {
+                if (value != _frameRate)
+                {
+                    _frameRate = value;
+                    OnPropertyChanged(nameof(FrameRate));
+                }
+            }
+        }
+        private int _frameRate;
+
+        public double MaxVectorDelta
+        {
+            get => _maxVectorDelta;
+            set
+            {
+                if (value != _maxVectorDelta)
+                {
+                    _maxVectorDelta = value;
+                    OnPropertyChanged(nameof(MaxVectorDelta));
+                }
+            }
+        }
+        private double _maxVectorDelta;
+
+        public double RubberBandingModifier
+        {
+            get => _rubberBandingModifier;
+            set
+            {
+                if (value != _rubberBandingModifier)
+                {
+                    _rubberBandingModifier = value;
+                    OnPropertyChanged(nameof(RubberBandingModifier));
+                }
+            }
+        }
+        private double _rubberBandingModifier;
+
+
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected virtual void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

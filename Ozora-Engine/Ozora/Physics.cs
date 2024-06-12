@@ -49,6 +49,7 @@ namespace Ozora
         }
 
         private static Timer _timer;
+        private int _lastFrameRate;
 
         private VectorState _vectorState = new VectorState() { RateOfChange = new Vector3(0, 0, 0) };
 
@@ -60,6 +61,7 @@ namespace Ozora
                 if (value == true && _animateActivity == false && Interface != null)
                 {
                     _animateActivity = true;
+                    _lastFrameRate = Interface.Settings.FrameRate;
                     switch (Interface.Settings.SimulationStyle)
                     {
                         case SimulationStyle.Sun:
@@ -113,6 +115,8 @@ namespace Ozora
             _vectorState.LastTranslation = _finalTranslation;
             VectorUpdated(_finalTranslation);
 
+            // check may be removed as this becomes a non-variable
+            if (Interface.Settings.FrameRate != _lastFrameRate) { AnimateActivity = false; }
             if (direction.Length() < 0.0001) { AnimateActivity = false; Debug.WriteLine("Animation cancelled"); }
         }
 

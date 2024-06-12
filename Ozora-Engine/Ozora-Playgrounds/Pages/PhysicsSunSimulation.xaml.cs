@@ -42,6 +42,15 @@ namespace Ozora_Playgrounds.Pages
             MouseViewModel.Instance.PropertyChanged += Instance_PropertyChanged;
 
             Ozora.Physics.StartSimulation();
+
+            ControlPanelViewModel.Instance.PropertyChanged += Instance_PropertyChanged1;
+        }
+
+        private void Instance_PropertyChanged1(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            Ozora.Physics.Interface.Settings.FrameRate = ControlPanelViewModel.Instance.FrameRate;
+            Ozora.Physics.Interface.Settings.MaxVectorDeltaPerFrame = ControlPanelViewModel.Instance.MaxVectorDelta;
+            Ozora.Physics.Interface.Settings.RubberBandingModifier = ControlPanelViewModel.Instance.RubberBandingModifier;
         }
 
         private void Instance_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
