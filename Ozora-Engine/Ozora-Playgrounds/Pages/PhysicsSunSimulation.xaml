@@ -9,7 +9,7 @@
     xmlns:ozora="using:Ozora"
     mc:Ignorable="d">
 
-    <Grid>
+    <Grid x:Name="SunGrid" SizeChanged="SunGrid_SizeChanged">
         <Rectangle x:Name="SunObject" Fill="Yellow" Height="100" Width="100" RadiusX="50" HorizontalAlignment="Left" VerticalAlignment="Top" RadiusY="50"/>
     </Grid>
 </Page>

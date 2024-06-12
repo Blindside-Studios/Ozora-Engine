@@ -27,6 +27,7 @@ namespace Ozora_Playgrounds.Pages
             FrameRateSlider.Value = defaults.FrameRate;
             MaxVectorDeltaSlider.Value = defaults.MaxVectorDeltaPerFrame;
             RubberBandingSlider.Value = defaults.RubberBandingModifier;
+            BounceMomentumRetentionSlider.Value = defaults.BounceMomentumRetention;
         }
 
         private void FrameRateSlider_ValueChanged(object sender, RangeBaseValueChangedEventArgs e)
@@ -68,12 +69,12 @@ namespace Ozora_Playgrounds.Pages
 
         private void EnableCollisionBounceToggle_Toggled(object sender, RoutedEventArgs e)
         {
-
+            ControlPanelViewModel.Instance.EnableBounceOnCollision = EnableCollisionBounceToggle.IsOn;
         }
 
         private void BounceMomentumRetentionSlider_ValueChanged(object sender, RangeBaseValueChangedEventArgs e)
         {
-
+            ControlPanelViewModel.Instance.BounceMomentumRetention = (double)e.NewValue;
         }
     }
 

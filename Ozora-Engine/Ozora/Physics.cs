@@ -1,5 +1,6 @@
 ﻿using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Documents;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -40,7 +41,7 @@ namespace Ozora
 
         public void StartSimulation()
         {
-            Interface.PointerPositionUpdated += Interface_PointerPositionUpdated;
+            if (Interface != null) Interface.PointerPositionUpdated += Interface_PointerPositionUpdated;
         }
 
         private void Interface_PointerPositionUpdated(object sender, PointerPositionUpdatedEvent e)
@@ -112,16 +113,44 @@ namespace Ozora
                 (float)(elementPosition.X + direction.X - Interface.ObjectWidth / 2),
                 (float)(elementPosition.Y + direction.Y - Interface.ObjectHeight / 2), 0);
 
-            _vectorState.LastTranslation = _finalTranslation;
-            VectorUpdated(_finalTranslation);
-
 
             // collision detection
             if (Interface.Settings.EnableBorderCollision)
             {
-                Debug.WriteLine("Collision is being checked");
+                if (_finalTranslation.X < 0)
+                {
+                    // Left side collision
+                    _finalTranslation.X = 0;
+                    if (!Interface.Settings.EnableBounceOnCollision) direction.X = 0;
+                    else direction.X = (-direction.X) * (float)Interface.Settings.BounceMomentumRetention;
+                }
+                else if (_finalTranslation.X > (Interface.AreaDimensions.X - Interface.ObjectWidth))
+                {
+                    // Right side collision
+                    _finalTranslation.X = (float)(Interface.AreaDimensions.X - Interface.ObjectWidth);
+                    if (!Interface.Settings.EnableBounceOnCollision) direction.X = 0;
+                    else direction.X = (-direction.X) * (float)Interface.Settings.BounceMomentumRetention;
+                    Debug.WriteLine("EnableBounce: " + Interface.Settings.EnableBounceOnCollision + "  BounceModifier: " + Interface.Settings.BounceMomentumRetention + "  DirectionX: " + direction.X);
+                }
+                if (_finalTranslation.Y < 0)
+                {
+                    // Top side collision
+                    _finalTranslation.Y = 0;
+                    if (!Interface.Settings.EnableBounceOnCollision) direction.Y = 0;
+                    else direction.Y = (-direction.Y) * (float)Interface.Settings.BounceMomentumRetention;
+                }
+                else if (_finalTranslation.Y > (Interface.AreaDimensions.Y - Interface.ObjectHeight))
+                {
+                    // Bottom side collision
+                    _finalTranslation.Y = (float)(Interface.AreaDimensions.Y - Interface.ObjectHeight);
+                    if (!Interface.Settings.EnableBounceOnCollision) direction.Y = 0;
+                    else direction.Y = (-direction.Y) * (float)Interface.Settings.BounceMomentumRetention;
+                }
             }
 
+            _vectorState.RateOfChange = new Vector3(direction, 0);
+            _vectorState.LastTranslation = _finalTranslation;
+            VectorUpdated(_finalTranslation);
 
             // check may be removed as this becomes a non-variable
             if (Interface.Settings.FrameRate != _lastFrameRate) { AnimateActivity = false; }

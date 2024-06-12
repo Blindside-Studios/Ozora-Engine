@@ -23,7 +23,11 @@ namespace Ozora_Playgrounds.Pages
         public PhysicsSunSimulation()
         {
             this.InitializeComponent();
+            this.Loaded += PhysicsSunSimulation_Loaded;
+        }
 
+        private void PhysicsSunSimulation_Loaded(object sender, RoutedEventArgs e)
+        {
             OzoraSettings SunSettings = new OzoraSettings()
             {
                 SimulationStyle = SimulationStyle.Sun,
@@ -39,8 +43,10 @@ namespace Ozora_Playgrounds.Pages
             {
                 ObjectWidth = SunObject.ActualWidth,
                 ObjectHeight = SunObject.ActualHeight,
-                Settings = SunSettings
+                Settings = SunSettings,
+                AreaDimensions = new Windows.Foundation.Point(SunGrid.ActualWidth, SunGrid.ActualHeight)
             };
+
             Ozora.Physics.ObjectPositionCalculated += Physics_ObjectPositionCalculated;
             MouseViewModel.Instance.PropertyChanged += Instance_PropertyChanged;
 
@@ -70,6 +76,18 @@ namespace Ozora_Playgrounds.Pages
             {
                 this.SunObject.Translation = e.NewTranslationVector;
             });
+        }
+
+        private void SunGrid_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            /// Null check as this event is fired when the page loads, 
+            /// briefly before the code in the PageLoaded event is executed, 
+            /// which initializes the Interface
+            if (Ozora.Physics.Interface != null)
+            {
+                Ozora.Physics.Interface.AreaDimensions = 
+                    new Windows.Foundation.Point(SunGrid.ActualWidth, SunGrid.ActualHeight);
+            }
         }
     }
 }
