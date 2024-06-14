@@ -62,7 +62,7 @@ namespace Ozora
         private Windows.Foundation.Point _areaDimensions;
 
         
-        public double ObjectWidth
+        public float ObjectWidth
         {
             get
             {
@@ -70,9 +70,9 @@ namespace Ozora
             }
             set { SetField(ref _objectWidth, value); }
         }
-        private double _objectWidth;
+        private float _objectWidth;
 
-        public double ObjectHeight
+        public float ObjectHeight
         {
             get
             {
@@ -80,7 +80,7 @@ namespace Ozora
             }
             set { SetField(ref _objectHeight, value); }
         }
-        private double _objectHeight;
+        private float _objectHeight;
 
         public Grid CloudGrid { get; set; }
 
@@ -133,7 +133,7 @@ namespace Ozora
         }
         private int _frameRate;
 
-        public double MaxVectorDeltaPerFrame
+        public float MaxVectorDeltaPerFrame
         {
             get
             {
@@ -142,9 +142,9 @@ namespace Ozora
             }
             set { SetField(ref _maxVectorDeltaPerFrame, value); }
         }
-        private double _maxVectorDeltaPerFrame;
+        private float _maxVectorDeltaPerFrame;
 
-        public double RubberBandingModifier
+        public float RubberBandingModifier
         {
             get
             {
@@ -153,14 +153,14 @@ namespace Ozora
             }
             set { SetField(ref _rubberBandingModifier, value); }
         }
-        private double _rubberBandingModifier;
+        private float _rubberBandingModifier;
 
-        public double TrailingDragCoefficient
+        public float TrailingDragCoefficient
         {
             get => _trailingDragCoefficient;
             set { SetField(ref _trailingDragCoefficient, value); }
         }
-        private double _trailingDragCoefficient;
+        private float _trailingDragCoefficient;
 
         /*public int MaxTrailingSpeed
         {
@@ -183,7 +183,7 @@ namespace Ozora
         }
         private bool _enableBounceOnCollision;
 
-        public double BounceMomentumRetention
+        public float BounceMomentumRetention
         {
             get 
             {
@@ -192,7 +192,7 @@ namespace Ozora
             }
             set { SetField(ref _bounceMomentumRetention, value); }
         }
-        private double _bounceMomentumRetention;
+        private float _bounceMomentumRetention;
 
 
         // Boilerplate code for INotifyPropertyChanged event

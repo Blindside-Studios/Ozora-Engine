@@ -9,8 +9,8 @@ namespace Ozora
     public class DefaultValues
     {        
         public int FrameRate = 60;
-        public double MaxVectorDeltaPerFrame = 1;
-        public double RubberBandingModifier = 0.05;
-        public double BounceMomentumRetention = 0.5;
+        public float MaxVectorDeltaPerFrame = 1f;
+        public float RubberBandingModifier = 0.05f;
+        public float BounceMomentumRetention = 0.5f;
     }
 }

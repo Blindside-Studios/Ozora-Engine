@@ -94,8 +94,8 @@ namespace Ozora
         {
             Vector2 cursorPosition = new Vector2((float)CursorPosition.X, (float)CursorPosition.Y);
             Vector2 elementPosition = new Vector2(
-                (float)(_vectorState.LastTranslation.X + Interface.ObjectWidth / 2),
-                (float)(_vectorState.LastTranslation.Y + Interface.ObjectHeight / 2));
+                _vectorState.LastTranslation.X + Interface.ObjectWidth / 2,
+                _vectorState.LastTranslation.Y + Interface.ObjectHeight / 2);
 
             Vector2 direction;
 
@@ -103,14 +103,14 @@ namespace Ozora
             {
                 // Object chases the mouse cursor
                 direction = cursorPosition - elementPosition;
-                direction.X = direction.X * (float)Interface.Settings.RubberBandingModifier;
-                direction.Y = direction.Y * (float)Interface.Settings.RubberBandingModifier;
+                direction.X = direction.X * Interface.Settings.RubberBandingModifier;
+                direction.Y = direction.Y * Interface.Settings.RubberBandingModifier;
 
                 Vector2 _deltaVector = new Vector2(direction.X - _vectorState.RateOfChange.X, direction.Y - _vectorState.RateOfChange.Y);
 
                 if (_deltaVector.Length() > Interface.Settings.MaxVectorDeltaPerFrame)
                 {
-                    _deltaVector = Vector2.Normalize(_deltaVector) * (float)Interface.Settings.MaxVectorDeltaPerFrame;
+                    _deltaVector = Vector2.Normalize(_deltaVector) * Interface.Settings.MaxVectorDeltaPerFrame;
                 }
 
                 direction = new Vector2(
@@ -123,16 +123,14 @@ namespace Ozora
                 direction = new Vector2(_vectorState.RateOfChange.X, _vectorState.RateOfChange.Y);
                 if (Interface.Settings.TrailingDragCoefficient > 0)
                 {
-                    direction.X = direction.X * (float)(1 - Interface.Settings.TrailingDragCoefficient);
-                    direction.Y = direction.Y * (float)(1 - Interface.Settings.TrailingDragCoefficient);
+                    direction.X = direction.X * (1 - Interface.Settings.TrailingDragCoefficient);
+                    direction.Y = direction.Y * (1 - Interface.Settings.TrailingDragCoefficient);
                 }
             }
 
-            _vectorState.RateOfChange = new Vector3(direction, 0);
-
             Vector3 _finalTranslation = new Vector3(
-                (float)(elementPosition.X + direction.X - Interface.ObjectWidth / 2),
-                (float)(elementPosition.Y + direction.Y - Interface.ObjectHeight / 2), 0);
+                elementPosition.X + direction.X - Interface.ObjectWidth / 2,
+                elementPosition.Y + direction.Y - Interface.ObjectHeight / 2, 0);
 
 
             // Collision detection
@@ -143,29 +141,28 @@ namespace Ozora
                     // Left side collision
                     _finalTranslation.X = 0;
                     if (!Interface.Settings.EnableBounceOnCollision) direction.X = 0;
-                    else direction.X = (-direction.X) * (float)Interface.Settings.BounceMomentumRetention;
+                    else direction.X = (-direction.X) * Interface.Settings.BounceMomentumRetention;
                 }
                 else if (_finalTranslation.X > (Interface.AreaDimensions.X - Interface.ObjectWidth))
                 {
                     // Right side collision
-                    _finalTranslation.X = (float)(Interface.AreaDimensions.X - Interface.ObjectWidth);
+                    _finalTranslation.X = (float)Interface.AreaDimensions.X - Interface.ObjectWidth;
                     if (!Interface.Settings.EnableBounceOnCollision) direction.X = 0;
-                    else direction.X = (-direction.X) * (float)Interface.Settings.BounceMomentumRetention;
-                    Debug.WriteLine("EnableBounce: " + Interface.Settings.EnableBounceOnCollision + "  BounceModifier: " + Interface.Settings.BounceMomentumRetention + "  DirectionX: " + direction.X);
+                    else direction.X = (-direction.X) * Interface.Settings.BounceMomentumRetention;
                 }
                 if (_finalTranslation.Y < 0)
                 {
                     // Top side collision
                     _finalTranslation.Y = 0;
                     if (!Interface.Settings.EnableBounceOnCollision) direction.Y = 0;
-                    else direction.Y = (-direction.Y) * (float)Interface.Settings.BounceMomentumRetention;
+                    else direction.Y = (-direction.Y) * Interface.Settings.BounceMomentumRetention;
                 }
                 else if (_finalTranslation.Y > (Interface.AreaDimensions.Y - Interface.ObjectHeight))
                 {
                     // Bottom side collision
-                    _finalTranslation.Y = (float)(Interface.AreaDimensions.Y - Interface.ObjectHeight);
+                    _finalTranslation.Y = (float)Interface.AreaDimensions.Y - Interface.ObjectHeight;
                     if (!Interface.Settings.EnableBounceOnCollision) direction.Y = 0;
-                    else direction.Y = (-direction.Y) * (float)Interface.Settings.BounceMomentumRetention;
+                    else direction.Y = (-direction.Y) * Interface.Settings.BounceMomentumRetention;
                 }
             }
 

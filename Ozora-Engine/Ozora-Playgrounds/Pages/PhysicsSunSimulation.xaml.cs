@@ -33,16 +33,16 @@ namespace Ozora_Playgrounds.Pages
                 SimulationStyle = SimulationStyle.Sun,
                 FrameRate = 60,
                 MaxVectorDeltaPerFrame = 1,
-                RubberBandingModifier = 0.05,
+                RubberBandingModifier = 0.05f,
                 EnableBorderCollision = false,
                 EnableBounceOnCollision = false,
-                BounceMomentumRetention = 0.5
+                BounceMomentumRetention = 0.5f
             };
 
             Ozora.Physics.Interface = new OzoraInterface()
             {
-                ObjectWidth = SunObject.ActualWidth,
-                ObjectHeight = SunObject.ActualHeight,
+                ObjectWidth = (float)SunObject.ActualWidth,
+                ObjectHeight = (float)SunObject.ActualHeight,
                 Settings = SunSettings,
                 AreaDimensions = new Windows.Foundation.Point(SunGrid.ActualWidth, SunGrid.ActualHeight)
             };
@@ -58,12 +58,12 @@ namespace Ozora_Playgrounds.Pages
         private void ControlPanelViewModel_PropertyChanged1(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             Ozora.Physics.Interface.Settings.FrameRate = ControlPanelViewModel.Instance.FrameRate;
-            Ozora.Physics.Interface.Settings.MaxVectorDeltaPerFrame = ControlPanelViewModel.Instance.MaxVectorDelta;
-            Ozora.Physics.Interface.Settings.RubberBandingModifier = ControlPanelViewModel.Instance.RubberBandingModifier;
+            Ozora.Physics.Interface.Settings.MaxVectorDeltaPerFrame = (float)ControlPanelViewModel.Instance.MaxVectorDelta;
+            Ozora.Physics.Interface.Settings.RubberBandingModifier = (float)ControlPanelViewModel.Instance.RubberBandingModifier;
             Ozora.Physics.Interface.Settings.EnableBorderCollision = ControlPanelViewModel.Instance.EnableBorderCollisions;
             Ozora.Physics.Interface.Settings.EnableBounceOnCollision = ControlPanelViewModel.Instance.EnableBounceOnCollision;
-            Ozora.Physics.Interface.Settings.BounceMomentumRetention = ControlPanelViewModel.Instance.BounceMomentumRetention;
-            Ozora.Physics.Interface.Settings.TrailingDragCoefficient = ControlPanelViewModel.Instance.TrailingDragCoefficient;
+            Ozora.Physics.Interface.Settings.BounceMomentumRetention = (float)ControlPanelViewModel.Instance.BounceMomentumRetention;
+            Ozora.Physics.Interface.Settings.TrailingDragCoefficient = (float)ControlPanelViewModel.Instance.TrailingDragCoefficient;
         }
 
         private void MouseViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
