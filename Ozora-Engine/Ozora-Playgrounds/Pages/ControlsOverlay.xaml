@@ -17,6 +17,7 @@
                 <ComboBox x:Name="SimulationPickerComboBox" Header="Simulation Style" SelectedIndex="0" SelectionChanged="SimulationPickerComboBox_SelectionChanged">
                     <x:String>Sun</x:String>
                     <x:String>Clouds</x:String>
+                    <x:String>Birds</x:String>
                 </ComboBox>
                 <Slider x:Name="FrameRateSlider" Minimum="1" Maximum="120" Header="Framerate" ValueChanged="FrameRateSlider_ValueChanged"/>
                 <Slider x:Name="MaxVectorDeltaSlider" Header="Max Vector Delta" Minimum="0.1" Maximum="10" StepFrequency="0.1" SmallChange="0.1" ValueChanged="MaxVectorDeltaSlider_ValueChanged"/>

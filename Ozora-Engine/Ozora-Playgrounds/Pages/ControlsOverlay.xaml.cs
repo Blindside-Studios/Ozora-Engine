@@ -48,6 +48,15 @@ namespace Ozora_Playgrounds.Pages
 
         private void SimulationPickerComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            if (((ComboBox)sender).SelectedIndex == 2)
+            {
+
+            }
+            else
+            {
+
+            }
+            
             /*ComboBox _comboBox = (ComboBox)sender;
             switch (_comboBox.SelectedIndex)
             {

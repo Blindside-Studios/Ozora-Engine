@@ -12,6 +12,23 @@
     <EnableMsixTooling>true</EnableMsixTooling>
   </PropertyGroup>
   <ItemGroup>
+    <Content Remove="Assets\BirdSprites\ChattingLeft.png" />
+    <Content Remove="Assets\BirdSprites\ChattingRight.png" />
+    <Content Remove="Assets\BirdSprites\Flying1.png" />
+    <Content Remove="Assets\BirdSprites\Flying2.png" />
+    <Content Remove="Assets\BirdSprites\Flying3.png" />
+    <Content Remove="Assets\BirdSprites\Flying4.png" />
+    <Content Remove="Assets\BirdSprites\LookingAtWing1.png" />
+    <Content Remove="Assets\BirdSprites\LookingAtWing2.png" />
+    <Content Remove="Assets\BirdSprites\LookingAtWing3.png" />
+    <Content Remove="Assets\BirdSprites\LookingLeft.png" />
+    <Content Remove="Assets\BirdSprites\LookingRight.png" />
+    <Content Remove="Assets\BirdSprites\Singing1.png" />
+    <Content Remove="Assets\BirdSprites\Singing2.png" />
+    <Content Remove="Assets\BirdSprites\Singing3.png" />
+    <Content Remove="Assets\BirdSprites\Singing4.png" />
+    <Content Remove="Assets\BirdSprites\Sitting.png" />
+    <Content Remove="Assets\BirdSprites\StretchingWings.png" />
     <Content Remove="Assets\CloudSprites\cloud - 0.png" />
     <Content Remove="Assets\CloudSprites\cloud - 1.png" />
     <Content Remove="Assets\CloudSprites\cloud - 2.png" />
@@ -24,6 +41,7 @@
     <Content Remove="Assets\CloudSprites\cloud - 9.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Remove="Pages\BirdsSimulation.xaml" />
     <None Remove="Pages\ControlsOverlay.xaml" />
     <None Remove="Pages\PhysicsCloudsSimulation.xaml" />
     <None Remove="Pages\PhysicsSunSimulation.xaml" />
@@ -88,6 +106,57 @@
     <Resource Remove="Pages\PhysicsCloudsSimulation.xaml" />
   </ItemGroup>
   <ItemGroup>
+    <None Update="Assets\BirdSprites\ChattingLeft.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Assets\BirdSprites\ChattingRight.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Assets\BirdSprites\Flying1.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Assets\BirdSprites\Flying2.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Assets\BirdSprites\Flying3.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Assets\BirdSprites\Flying4.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Assets\BirdSprites\LookingAtWing1.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Assets\BirdSprites\LookingAtWing2.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Assets\BirdSprites\LookingAtWing3.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Assets\BirdSprites\LookingLeft.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Assets\BirdSprites\LookingRight.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Assets\BirdSprites\Singing1.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Assets\BirdSprites\Singing2.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Assets\BirdSprites\Singing3.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Assets\BirdSprites\Singing4.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Assets\BirdSprites\Sitting.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Assets\BirdSprites\StretchingWings.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="Assets\CloudSprites\cloud - 0.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -118,5 +187,8 @@
     <None Update="Assets\CloudSprites\cloud - 9.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <Page Update="Pages\BirdsSimulation.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
 </Project>

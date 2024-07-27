@@ -21,8 +21,10 @@ namespace Ozora_Playgrounds.Pages
         public PhysicsViewPort()
         {
             this.InitializeComponent();
-            BodyViewPort.NavigateToType(typeof(PhysicsSunSimulation), null, null);
-            StateOverlay.NavigateToType(typeof(ControlsOverlay), null, null);
+            BodyViewPort.NavigateToType(typeof(BirdsSimulation), null, null);
+            //StateOverlay.NavigateToType(typeof(ControlsOverlay), null, null);
+            StateOverlay.Visibility = Visibility.Collapsed;
+
             //OzoraSettings.Instance.SimulationStyleChanged += Instance_SimulationStyleChanged;
         }
 
