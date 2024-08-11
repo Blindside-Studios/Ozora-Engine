@@ -20,12 +20,14 @@ namespace Ozora
     /// ParulAI is the internal name for the algorithm that drives the birds' decisionmaking.
     /// Its name is derived from the Tropical Parula, which is a bird.
     /// </summary>
+    
     public class ParulAI
     {
         private Timer _timer;
 
         public void StartSpawningBirds()
         {
+            CurrentBirdSimulation.Instance.RefreshCachedSprites();
             CurrentBirdSimulation.Instance.Birds = new Bird[] { };
             _timer = new Timer(_spawnBird, null, 0, 20000);
         }
@@ -71,10 +73,39 @@ namespace Ozora
                 {
                     _state = value;
                     OnPropertyChanged(nameof(State));
-                    CurrentBirdSimulation.Instance.UIDispatcherQueue.TryEnqueue(() =>
+                    CurrentBirdSimulation.Instance.UIDispatcherQueue.TryEnqueue(async () =>
                     {
-                        var bitmapImage = new BitmapImage(new Uri($"ms-appx:///BirdSprites/{value.ToString()}.png"));
-                        BirdSprite.Source = bitmapImage;
+                        /// Clone properties from the original image control in order to mask the flickering that happens on switch.
+                        /// But only do this when the bird isn't flying, because the flying animation moves so much it looks weird.
+                        bool isBirdStationary = State != BirdState.Flying1 && State != BirdState.Flying2 && State != BirdState.Flying3 && State != BirdState.Flying4;
+                        
+                        Image _clone = new Image
+                        {
+                            Source = BirdSprite.Source,
+                            Width = BirdSprite.Width,
+                            Height = BirdSprite.Height,
+                            Stretch = BirdSprite.Stretch,
+                            Translation = BirdSprite.Translation,
+                            HorizontalAlignment = BirdSprite.HorizontalAlignment,
+                            VerticalAlignment = BirdSprite.VerticalAlignment,
+                        };
+
+                        if (isBirdStationary)
+                        {
+                            CurrentBirdSimulation.Instance.RootGrid.Children.Add(_clone);
+                            await Task.Delay(1);
+                        }
+
+                        /// Load sprites from cache. This should improve performance and reduce flickering on sprite swap.
+                        /// Turns out, it still fucking flickers... fuck!
+                        BirdSprite.Source = CurrentBirdSimulation.Instance._imageCache[value];
+
+                        // remove cloned image again to only show new image after it has correctly loaded
+                        if (isBirdStationary)
+                        {
+                            await Task.Delay(1);
+                            CurrentBirdSimulation.Instance.RootGrid.Children.Remove(_clone);
+                        }
                     });
                 }
             }
@@ -106,9 +137,12 @@ namespace Ozora
         public Image BirdSprite { get; set; }
         
         private static Timer _timer;
-        
+
         public void EngageAI()
         {
+            /// Technically, this would be loading all the sprites for each bird individually.
+            /// Not ideal but not the end of the world.
+            /// Can optimize later if necessary.
             _timer = new Timer(_makeDecision, null, 0, 500);
         }
 
@@ -307,6 +341,16 @@ namespace Ozora
         public Grid RootGrid { get; set; }
         public RestingSpot[] RestingSpots { get; set; }
         public Bird[] Birds { get; set; }
+
+        internal Dictionary<BirdState, BitmapImage> _imageCache = new Dictionary<BirdState, BitmapImage>();
+        public void RefreshCachedSprites()
+        {
+            foreach (BirdState state in Enum.GetValues(typeof(BirdState)))
+            {
+                var bitmapImage = new BitmapImage(new Uri($"ms-appx:///BirdSprites/{state.ToString()}.png"));
+                _imageCache[state] = bitmapImage;
+            }
+        }
     }
 
     public enum BirdState
