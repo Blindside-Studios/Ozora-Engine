@@ -9,9 +9,9 @@
     mc:Ignorable="d">
 
     <Grid x:Name="RootGrid">
-        <Rectangle Translation="500,500,0" Fill="Red" Width="128" Height="128" VerticalAlignment="Top" HorizontalAlignment="Left"/>
-        <Rectangle Translation="960,60,0" Fill="Red" Width="128" Height="128" VerticalAlignment="Top" HorizontalAlignment="Left"/>
-        <Rectangle Translation="400,80,0" Fill="Red" Width="128" Height="128" VerticalAlignment="Top" HorizontalAlignment="Left"/>
-        <Rectangle Translation="1000,400,0" Fill="Red" Width="128" Height="128" VerticalAlignment="Top" HorizontalAlignment="Left"/>
+        <Rectangle Translation="500,500,0" Fill="Green" Width="128" Height="128" VerticalAlignment="Top" HorizontalAlignment="Left"/>
+        <Rectangle Translation="960,60,0" Fill="Green" Width="128" Height="128" VerticalAlignment="Top" HorizontalAlignment="Left"/>
+        <Rectangle Translation="400,80,0" Fill="Green" Width="128" Height="128" VerticalAlignment="Top" HorizontalAlignment="Left"/>
+        <Rectangle Translation="1000,400,0" Fill="Green" Width="128" Height="128" VerticalAlignment="Top" HorizontalAlignment="Left"/>
     </Grid>
 </Page>
