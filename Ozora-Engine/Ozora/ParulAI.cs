@@ -24,6 +24,7 @@ namespace Ozora
 
         public void StartSpawningBirds()
         {
+            CurrentBirdSimulation.Instance.Birds = new Bird[] { };
             _timer = new Timer(_spawnBird, null, 0, 20000);
         }
 
@@ -34,7 +35,7 @@ namespace Ozora
 
         private void _spawnBird(object state)
         {
-            CurrentSimulation.Instance.UIDispatcherQueue.TryEnqueue(() =>
+            CurrentBirdSimulation.Instance.UIDispatcherQueue.TryEnqueue(() =>
             {
                 Bird _bird = new Bird();
                 _bird.BirdSprite = new Image();
@@ -43,8 +44,15 @@ namespace Ozora
                 _bird.BirdSprite.Stretch = Stretch.UniformToFill;
                 _bird.BirdSprite.Height = 128;
                 _bird.BirdSprite.Width = 128;
+                _bird.BirdSprite.HorizontalAlignment = Microsoft.UI.Xaml.HorizontalAlignment.Left;
+                _bird.BirdSprite.VerticalAlignment = Microsoft.UI.Xaml.VerticalAlignment.Top;
 
-                CurrentSimulation.Instance.RootGrid.Children.Add(_bird.BirdSprite);
+                _bird.State = BirdState.Flying1;
+                // TODO: No longer hardcode this value
+                _bird.Position = new Vector3(-128, 200, 0);
+
+                CurrentBirdSimulation.Instance.RootGrid.Children.Add(_bird.BirdSprite);
+                CurrentBirdSimulation.Instance.Birds.Append(_bird);
                 _bird.EngageAI();
             });
         }
@@ -52,8 +60,42 @@ namespace Ozora
 
     public class Bird: INotifyPropertyChanged
     {
-        public BirdState State { get; set; }
-        public Vector3 Position { get; set; }
+        public BirdState State
+        {
+            get => _state;
+            set
+            {
+                if (_state != value)
+                {
+                    _state = value;
+                    OnPropertyChanged(nameof(State));
+                    CurrentBirdSimulation.Instance.UIDispatcherQueue.TryEnqueue(() =>
+                    {
+                        var bitmapImage = new BitmapImage(new Uri($"ms-appx:///BirdSprites/{value.ToString()}.png"));
+                        BirdSprite.Source = bitmapImage;
+                    });
+                }
+            }
+        }
+        private BirdState _state;
+        public Vector3 Position
+        {
+            get => _position;
+            set
+            {
+                if (value != _position)
+                {
+                    _position = value;
+                    OnPropertyChanged(nameof(Position));
+                    CurrentBirdSimulation.Instance.UIDispatcherQueue.TryEnqueue(() =>
+                    {
+                        BirdSprite.Translation = value;
+                    });
+                }
+            }
+        }
+        private Vector3 _position;
+
         public RestingSpot RestingSpot { get; set; }
         public Image BirdSprite { get; set; }
         
@@ -66,6 +108,8 @@ namespace Ozora
 
         private void _makeDecision(object state)
         {
+            Position = new Vector3(250,250,0);
+            State = BirdState.Singing3;
             switch (State)
             {
 
@@ -92,16 +136,16 @@ namespace Ozora
         public bool IsOccupied { get; set; }
     }
 
-    public class CurrentSimulation
+    public class CurrentBirdSimulation
     {
-        private static CurrentSimulation _instance;
-        public static CurrentSimulation Instance
+        private static CurrentBirdSimulation _instance;
+        public static CurrentBirdSimulation Instance
         {
             get
             {
                 if (_instance == null)
                 {
-                    _instance = new CurrentSimulation();
+                    _instance = new CurrentBirdSimulation();
                 }
                 return _instance;
             }

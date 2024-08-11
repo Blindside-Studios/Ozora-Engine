@@ -5,6 +5,7 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
+using Ozora;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -26,6 +27,13 @@ namespace Ozora_Playgrounds.Pages
         public BirdsSimulation()
         {
             this.InitializeComponent();
+
+            ParulAI parulAI = new ParulAI();
+
+            CurrentBirdSimulation.Instance.RootGrid = RootGrid;
+            CurrentBirdSimulation.Instance.UIDispatcherQueue = DispatcherQueue;
+            
+            parulAI.StartSpawningBirds();
         }
     }
 }
