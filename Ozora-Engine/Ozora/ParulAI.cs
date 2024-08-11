@@ -1,10 +1,12 @@
 ﻿using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Documents;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Imaging;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Numerics;
 using System.Runtime.InteropServices;
@@ -95,8 +97,12 @@ namespace Ozora
             }
         }
         private Vector3 _position;
+        public Vector3 TargetPosition { get; set; }
 
         public RestingSpot RestingSpot { get; set; }
+        public RestingSpot TargetedRestingSpot { get; set; }
+        public bool IsTargetingLocation { get; set; }
+        public bool IsTargetedLocationRestingSpot { get; set; }
         public Image BirdSprite { get; set; }
         
         private static Timer _timer;
@@ -108,17 +114,81 @@ namespace Ozora
 
         private void _makeDecision(object state)
         {
-            Position = new Vector3(250,250,0);
-            State = BirdState.Singing3;
-            switch (State)
+            if (IsTargetingLocation != true && IsTargetedLocationRestingSpot != true && TargetedRestingSpot == null)
             {
+                /// You may ask why this has so many conditions, well, let me explain:
+                /// IsTargetingLocation != null: This code should only run when the bird is not currently targeting anything
+                /// IsTargetedLocationRestingSpot != null: If the bird isn't currently targeting something but this is set to true, it means that the bird is sitting
+                /// RestingSpot != null: Additional check that this code should only run while the bird isn't sitting.
+                /// Note that null states also allow this to be run.
+                /// In summary, this code will only run once to find a suitable first target.
+                Random rnd = new Random();
+                Debug.WriteLine(CurrentBirdSimulation.Instance.RestingSpots.Count());
+                if (CurrentBirdSimulation.Instance.RestingSpots.Count() > 0)
+                {
+                    foreach (RestingSpot spot in CurrentBirdSimulation.Instance.RestingSpots) { Debug.WriteLine(spot.Position); }
 
+                    int _restingIndex = rnd.Next(0, CurrentBirdSimulation.Instance.RestingSpots.Count() - 1);
+                    RestingSpot _spot = CurrentBirdSimulation.Instance.RestingSpots[_restingIndex];
+                    if (_spot.IsOccupied != true) { TargetPosition = _spot.Position; TargetedRestingSpot = _spot; _spot.IsOccupied = true; IsTargetedLocationRestingSpot = true; }
+                    // TODO: What the fuck is this hardcoded number, fix this, oh my goooood!
+                    else
+                    {
+                        TargetPosition = new Vector3(500, 500, 0);
+                        IsTargetedLocationRestingSpot = false;
+                    }
+                }
+                
             }
-        }
+            else
+            {
+                if (State == BirdState.Flying1 || State == BirdState.Flying2 || State == BirdState.Flying3 || State == BirdState.Flying4)
+                {
+                    if (Vector3.Distance(Position, TargetPosition) < 2f)
+                    {
+                        // if close enough, snap to resting spot
+                        Position = TargetPosition;
+                        RestingSpot = TargetedRestingSpot;
+                        State = BirdState.Sitting;
+                        
+                        // if targeted position wasn't a resting spot but the bird went off the screen, dispose of the bird
+                        if (!IsTargetedLocationRestingSpot)
+                        {
+                            CurrentBirdSimulation.Instance.UIDispatcherQueue.TryEnqueue(() =>
+                            {
+                                CurrentBirdSimulation.Instance.RootGrid.Children.Remove(BirdSprite);
+                            });
+                            var list = CurrentBirdSimulation.Instance.Birds.ToList();
+                            list.Remove(this);
+                            CurrentBirdSimulation.Instance.Birds = list.ToArray<Bird>();
+                        }
+                        return;
+                    }
+                    else
+                    {
+                        // if not close to destination, continue moving
+                        Vector3 _movement = new Vector3(TargetPosition.X - Position.X, TargetPosition.Y - Position.Y, 0);
+                        if (_movement.Length() > 40) _movement = Vector3.Normalize(_movement) * 40;
+                        Position = Position + _movement;
+                    }
+                }
 
-        public void SnapToRestingSpot()
-        {
-
+                switch (State)
+                {
+                    case BirdState.Flying1:
+                        State = BirdState.Flying2;
+                        break;
+                    case BirdState.Flying2:
+                        State = BirdState.Flying3;
+                        break;
+                    case BirdState.Flying3:
+                        State = BirdState.Flying4;
+                        break;
+                    case BirdState.Flying4:
+                        State = BirdState.Flying1;
+                        break;
+                }
+            }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
