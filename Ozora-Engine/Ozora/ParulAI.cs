@@ -173,6 +173,7 @@ namespace Ozora
                     }
                 }
 
+                Random rnd = new Random();
                 switch (State)
                 {
                     case BirdState.Flying1:
@@ -186,6 +187,87 @@ namespace Ozora
                         break;
                     case BirdState.Flying4:
                         State = BirdState.Flying1;
+                        break;
+                    case BirdState.Sitting:
+                        int nextAnimationIndex = rnd.Next(0, 50);
+                        if (nextAnimationIndex < 41) State = BirdState.Sitting;
+                        else if (nextAnimationIndex < 43) State = BirdState.LookingLeft;
+                        else if (nextAnimationIndex < 45) State = BirdState.LookingRight;
+                        else if (nextAnimationIndex < 47) State = BirdState.ChattingLeft;
+                        else if (nextAnimationIndex < 48) State = BirdState.ChattingRight;
+                        else if (nextAnimationIndex < 49) State = BirdState.Singing1;
+                        else if (nextAnimationIndex < 50) State = BirdState.LookingAtWing1;
+                        // just have it fly off the screen in this case
+                        else if (nextAnimationIndex == 50) { State = BirdState.Flying1; TargetPosition = new Vector3(5000, 500, 0); IsTargetedLocationRestingSpot = false; }
+                        break;
+                    case BirdState.LookingLeft:
+                        var _nextBehaviorLookingLeft = rnd.NextDouble();
+                        if (_nextBehaviorLookingLeft < 0.75) State = BirdState.LookingLeft;
+                        else if (_nextBehaviorLookingLeft < 0.80) State = BirdState.LookingAtWing1; // in both sprites, bird is looking to left
+                        else if (_nextBehaviorLookingLeft < 0.85) State = BirdState.LookingRight;
+                        else if (_nextBehaviorLookingLeft < 0.95) State = BirdState.ChattingLeft;
+                        else State = BirdState.Sitting;
+                        break;
+                    case BirdState.LookingRight:
+                        var _nextBehaviorLookingRight = rnd.NextDouble();
+                        if (_nextBehaviorLookingRight < 0.75) State = BirdState.LookingRight;
+                        else if (_nextBehaviorLookingRight < 0.80) State = BirdState.Singing1; // in both sprites, bird is looking to right
+                        else if (_nextBehaviorLookingRight < 0.85) State = BirdState.LookingLeft;
+                        else if (_nextBehaviorLookingRight < 0.95) State = BirdState.ChattingRight;
+                        else State = BirdState.Sitting;
+                        break;
+                    case BirdState.ChattingLeft:
+                        var _nextBehaviorChattingLeft = rnd.NextDouble();
+                        if (_nextBehaviorChattingLeft < 0.9) State = BirdState.LookingLeft;
+                        else State = BirdState.Sitting;
+                        break;
+                    case BirdState.ChattingRight:
+                        var _nextBehaviorChattingRight = rnd.NextDouble();
+                        if (_nextBehaviorChattingRight < 0.9) State = BirdState.LookingRight;
+                        else State = BirdState.Sitting;
+                        break;
+                    case BirdState.StretchingWings:
+                        var _nextBehaviorStretchingWings = rnd.NextDouble();
+                        if (_nextBehaviorStretchingWings < 0.3) State = BirdState.LookingAtWing1;
+                        // just have it fly off the screen in this case
+                        else if (_nextBehaviorStretchingWings < 0.4) { State = BirdState.Flying1; TargetPosition = new Vector3(5000, 500, 0); IsTargetedLocationRestingSpot = false; }
+                        else State = BirdState.Sitting;
+                        break;
+                    case BirdState.LookingAtWing1:
+                        var _nextBehaviorLookingAtWing1 = rnd.NextDouble();
+                        if (_nextBehaviorLookingAtWing1 < 0.2) State = BirdState.LookingLeft;
+                        else State = BirdState.LookingAtWing2;
+                        break;
+                    case BirdState.LookingAtWing2:
+                        var _nextBehaviorLookingAtWing2 = rnd.NextDouble();
+                        if (_nextBehaviorLookingAtWing2 < 0.2) State = BirdState.LookingAtWing2;
+                        else if (_nextBehaviorLookingAtWing2 < 0.6) State = BirdState.LookingAtWing1;
+                        else if (_nextBehaviorLookingAtWing2 < 0.75) State = BirdState.LookingLeft;
+                        else State = BirdState.LookingAtWing3;
+                        break;
+                    case BirdState.LookingAtWing3:
+                        var _nextBehaviorLookingAtWing3 = rnd.NextDouble();
+                        if (_nextBehaviorLookingAtWing3 < 0.7) State = BirdState.LookingRight;
+                        else if (_nextBehaviorLookingAtWing3 < 9) State = BirdState.ChattingRight;
+                        else if (_nextBehaviorLookingAtWing3 < 0.9) State = BirdState.StretchingWings;
+                        else State = BirdState.Sitting;
+                        break;
+                    case BirdState.Singing1:
+                        State = BirdState.Singing2;
+                        break;
+                    case BirdState.Singing2:
+                        State = BirdState.Singing3;
+                        break;
+                    case BirdState.Singing3:
+                        var _nextBehaviorSinging3 = rnd.NextDouble();
+                        if (_nextBehaviorSinging3 < 0.4) State = BirdState.Singing3;
+                        else State = BirdState.Singing4;
+                        break;
+                    case BirdState.Singing4:
+                        var _nextBehaviorSinging4 = rnd.NextDouble();
+                        if (_nextBehaviorSinging4 < 0.4) State = BirdState.LookingRight;
+                        if (_nextBehaviorSinging4 < 0.6) State = BirdState.ChattingRight;
+                        else State = BirdState.Sitting;
                         break;
                 }
             }
