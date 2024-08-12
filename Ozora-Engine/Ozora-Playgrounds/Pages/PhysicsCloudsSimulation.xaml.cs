@@ -23,12 +23,15 @@ namespace Ozora_Playgrounds.Pages
 {
     public sealed partial class PhysicsCloudsSimulation : Page
     {
+        OzoraEngine ozoraEngine;
+
         public PhysicsCloudsSimulation()
         {
             this.InitializeComponent();
 
             // make sure to wait for the CloudsGrid to be loaded so it has an actual width that can be used to compute the cloud distribution
             CloudsGrid.Loaded += CloudsGrid_Loaded;
+            MouseViewModel.Instance.PropertyChanged += Instance_PropertyChanged;
         }
 
         private void CloudsGrid_Loaded(object sender, RoutedEventArgs e)
@@ -38,11 +41,9 @@ namespace Ozora_Playgrounds.Pages
 
         private void loadClouds()
         {
-            /*CloudsGrid.Children.Clear();
+            CloudsGrid.Children.Clear();
 
-            OzoraInterface.Instance.UIDispatcherQueue = Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread();
-            OzoraInterface.Instance.CloudGrid = CloudsGrid;
-
+            // the initializer is used to generate clouds, it doesn't need to be passed into the actual engine
             Ozora.Initializer initializer = new();
             Ozora.CloudSettings settings = new()
             {
@@ -72,7 +73,35 @@ namespace Ozora_Playgrounds.Pages
 
                 CloudsGrid.Children.Add(cloud);
                 cloud.Opacity = 0.5;
-            }*/
+            }
+
+
+            ozoraEngine = new OzoraEngine();
+
+            OzoraSettings ozoraSettings = new OzoraSettings()
+            {
+                SimulationStyle = SimulationStyle.Clouds,
+                FrameRate = 60,
+            };
+
+            ozoraEngine.Physics.Interface = new OzoraInterface()
+            {
+                AreaDimensions = new Windows.Foundation.Point(CloudsGrid.ActualWidth, CloudsGrid.ActualHeight),
+                CloudGrid = CloudsGrid,
+                UIDispatcherQueue = Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread(),
+                Settings = ozoraSettings
+            };
+
+            /// Very important to set this property, otherwise, the physics simulation will not engage!
+            /// Equally important to call the method below. This allows the simulation to disengage while it 
+            /// is still active to avoid having to restart, though this is mainly used for the sun simulation.
+            ozoraEngine.Physics.MouseCursorEngaged = true;
+            ozoraEngine.Physics.StartSimulation();
+        }
+
+        private void Instance_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (ozoraEngine != null) ozoraEngine.Physics.Interface.PointerLocation = MouseViewModel.Instance.MousePosition;
         }
 
         private void CloudsGrid_SizeChanged(object sender, SizeChangedEventArgs e)

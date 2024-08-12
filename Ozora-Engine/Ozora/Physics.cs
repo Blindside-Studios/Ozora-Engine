@@ -73,7 +73,7 @@ namespace Ozora
                     switch (Interface.Settings.SimulationStyle)
                     {
                         case SimulationStyle.Sun:
-                            if (MouseCursorEngaged) _timer = new Timer(AnimateSunObject, null, 0, 1000 / Interface.Settings.FrameRate);
+                            _timer = new Timer(AnimateSunObject, null, 0, 1000 / Interface.Settings.FrameRate);
                             break;
                         case SimulationStyle.Clouds:
                             _timer = new Timer(AnimateCloudsObject, null, 0, 1000 / Interface.Settings.FrameRate);
