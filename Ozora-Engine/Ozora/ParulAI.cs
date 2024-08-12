@@ -316,6 +316,7 @@ namespace Ozora
 
     public class RestingSpot
     {
+        public string Identifier { get; set; }
         public Vector3 Position { get; set; }
         public RestingSpot SpotToTheLeft { get; set; }
         public RestingSpot SpotToTheRight { get; set; }

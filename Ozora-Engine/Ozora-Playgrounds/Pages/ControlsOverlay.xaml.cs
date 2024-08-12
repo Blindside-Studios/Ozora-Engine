@@ -47,29 +47,22 @@ namespace Ozora_Playgrounds.Pages
         }
 
         private void SimulationPickerComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (((ComboBox)sender).SelectedIndex == 2)
-            {
-
-            }
-            else
-            {
-
-            }
-            
-            /*ComboBox _comboBox = (ComboBox)sender;
+        {   
+            ComboBox _comboBox = (ComboBox)sender;
             switch (_comboBox.SelectedIndex)
             {
                 case 0:
-                    OzoraSettings.Instance.SimulationStyle = SimulationStyle.Sun;
+                    MouseViewModel.Instance.SimType = SimulationType.Sun;
                     break;
                 case 1:
-                    OzoraSettings.Instance.SimulationStyle = SimulationStyle.Clouds;
+                    MouseViewModel.Instance.SimType = SimulationType.Clouds;
+                    break;
+                case 2:
+                    MouseViewModel.Instance.SimType = SimulationType.Birds;
                     break;
                 default:
                     break;
             }
-            OzoraInterface.Instance.LaunchNewActivity();*/
         }
 
         private void EnableBorderCollisionToggle_Toggled(object sender, RoutedEventArgs e)

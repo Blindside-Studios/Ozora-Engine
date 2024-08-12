@@ -86,11 +86,31 @@ namespace Ozora_Playgrounds
         }
         private bool _engageMouse;
 
+        public SimulationType SimType 
+        {   get => _simType;
+            set
+            {
+                if (value != _simType)
+                {
+                    _simType = value;
+                    OnPropertyChanged(nameof(SimType));
+                }
+            }
+        }
+        private SimulationType _simType;
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         protected virtual void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+    }
+
+    public enum SimulationType
+    {
+        Sun,
+        Clouds,
+        Birds
     }
 }

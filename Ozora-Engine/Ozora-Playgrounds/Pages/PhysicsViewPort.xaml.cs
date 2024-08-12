@@ -22,10 +22,29 @@ namespace Ozora_Playgrounds.Pages
         {
             this.InitializeComponent();
             BodyViewPort.NavigateToType(typeof(BirdsSimulation), null, null);
-            //StateOverlay.NavigateToType(typeof(ControlsOverlay), null, null);
-            StateOverlay.Visibility = Visibility.Collapsed;
+            StateOverlay.NavigateToType(typeof(ControlsOverlay), null, null);
 
+            MouseViewModel.Instance.PropertyChanged += Instance_PropertyChanged;
             //OzoraSettings.Instance.SimulationStyleChanged += Instance_SimulationStyleChanged;
+        }
+
+        private void Instance_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "SimType")
+            {
+                switch (MouseViewModel.Instance.SimType)
+                {
+                    case SimulationType.Sun:
+                        BodyViewPort.NavigateToType(typeof(PhysicsSunSimulation), null, null);
+                        break;
+                    case SimulationType.Clouds:
+                        BodyViewPort.NavigateToType(typeof(PhysicsCloudsSimulation), null, null);
+                        break;
+                    case SimulationType.Birds:
+                        BodyViewPort.NavigateToType(typeof(BirdsSimulation), null, null);
+                        break;
+                }
+            }
         }
 
         /*private void Instance_SimulationStyleChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
