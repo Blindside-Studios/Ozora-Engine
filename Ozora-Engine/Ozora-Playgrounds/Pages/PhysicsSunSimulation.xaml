@@ -11,5 +11,7 @@
 
     <Grid x:Name="SunGrid" SizeChanged="SunGrid_SizeChanged">
         <Rectangle x:Name="SunObject" Fill="Yellow" Height="100" Width="100" RadiusX="50" HorizontalAlignment="Left" VerticalAlignment="Top" RadiusY="50"/>
+        <Rectangle x:Name="GroundObject" Fill="LawnGreen" Height="200" VerticalAlignment="Bottom" HorizontalAlignment="Stretch"/>
+        <Rectangle x:Name="GroundDarkObject" Fill="DarkGreen" Height="200" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" Opacity="0"/>
     </Grid>
 </Page>

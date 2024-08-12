@@ -168,13 +168,15 @@ namespace Ozora
                     int _restingIndex = rnd.Next(0, CurrentBirdSimulation.Instance.RestingSpots.Count() - 1);
                     RestingSpot _spot = CurrentBirdSimulation.Instance.RestingSpots[_restingIndex];
                     if (_spot.IsOccupied != true) { TargetPosition = _spot.Position; TargetedRestingSpot = _spot; _spot.IsOccupied = true; IsTargetedLocationRestingSpot = true; }
-                    // TODO: What the fuck is this hardcoded number, fix this, oh my goooood!
+                    // 10000 is the expected maximum width, may update as needed. Curerntly, this is overkill, if it performs badly, this can be reduced, obviously.
                     else
                     {
-                        TargetPosition = new Vector3(500, 500, 0);
+                        TargetPosition = new Vector3(10000, (float)rnd.Next(20, 200), 0);
+                        IsTargetingLocation = true;
                         IsTargetedLocationRestingSpot = false;
                     }
                 }
+                else this.Kill();
                 
             }
             else
@@ -308,6 +310,17 @@ namespace Ozora
                         break;
                 }
             }
+        }
+
+        public void Kill()
+        {
+            CurrentBirdSimulation.Instance.UIDispatcherQueue.TryEnqueue(() =>
+            {
+                CurrentBirdSimulation.Instance.RootGrid.Children.Remove(BirdSprite);
+            });
+            var list = CurrentBirdSimulation.Instance.Birds.ToList();
+            list.Remove(this);
+            CurrentBirdSimulation.Instance.Birds = list.ToArray<Bird>();
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
