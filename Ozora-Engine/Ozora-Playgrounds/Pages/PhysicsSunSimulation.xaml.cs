@@ -13,6 +13,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Ozora;
+using System.Diagnostics;
 
 namespace Ozora_Playgrounds.Pages
 {
@@ -23,11 +24,23 @@ namespace Ozora_Playgrounds.Pages
         public PhysicsSunSimulation()
         {
             this.InitializeComponent();
+            this.NavigationCacheMode = NavigationCacheMode.Disabled;
             this.Loaded += PhysicsSunSimulation_Loaded;
+            this.Unloaded += PhysicsSunSimulation_Unloaded;
+        }
+
+        private void PhysicsSunSimulation_Unloaded(object sender, RoutedEventArgs e)
+        {
+            Ozora.Physics.MouseCursorEngaged = false;
+            Ozora.Physics.InterruptSimulation();
+            Ozora = null;
+            Debug.WriteLine("Unloaded Ozora Sun Simulation Model");
         }
 
         private void PhysicsSunSimulation_Loaded(object sender, RoutedEventArgs e)
         {
+            Ozora = new OzoraEngine();
+
             OzoraSettings SunSettings = new OzoraSettings()
             {
                 SimulationStyle = SimulationStyle.Sun,
@@ -68,8 +81,11 @@ namespace Ozora_Playgrounds.Pages
 
         private void MouseViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            Ozora.Physics.Interface.PointerLocation = MouseViewModel.Instance.MousePosition;
-            Ozora.Physics.MouseCursorEngaged = MouseViewModel.Instance.EngageMouse;
+            if (Ozora != null)
+            {
+                Ozora.Physics.Interface.PointerLocation = MouseViewModel.Instance.MousePosition;
+                Ozora.Physics.MouseCursorEngaged = MouseViewModel.Instance.EngageMouse;
+            }
         }
 
         private void Physics_ObjectPositionCalculated(object sender, ObjectPositionUpdatedEvent e)

@@ -73,40 +73,43 @@ namespace Ozora
                 {
                     _state = value;
                     OnPropertyChanged(nameof(State));
-                    CurrentBirdSimulation.Instance.UIDispatcherQueue.TryEnqueue(async () =>
+                    if (CurrentBirdSimulation.Instance.UIDispatcherQueue != null)
                     {
-                        /// Clone properties from the original image control in order to mask the flickering that happens on switch.
-                        /// But only do this when the bird isn't flying, because the flying animation moves so much it looks weird.
-                        bool isBirdStationary = State != BirdState.Flying1 && State != BirdState.Flying2 && State != BirdState.Flying3 && State != BirdState.Flying4;
-                        
-                        Image _clone = new Image
+                        CurrentBirdSimulation.Instance.UIDispatcherQueue.TryEnqueue(async () =>
                         {
-                            Source = BirdSprite.Source,
-                            Width = BirdSprite.Width,
-                            Height = BirdSprite.Height,
-                            Stretch = BirdSprite.Stretch,
-                            Translation = BirdSprite.Translation,
-                            HorizontalAlignment = BirdSprite.HorizontalAlignment,
-                            VerticalAlignment = BirdSprite.VerticalAlignment,
-                        };
+                            /// Clone properties from the original image control in order to mask the flickering that happens on switch.
+                            /// But only do this when the bird isn't flying, because the flying animation moves so much it looks weird.
+                            bool isBirdStationary = State != BirdState.Flying1 && State != BirdState.Flying2 && State != BirdState.Flying3 && State != BirdState.Flying4;
 
-                        if (isBirdStationary)
-                        {
-                            CurrentBirdSimulation.Instance.RootGrid.Children.Add(_clone);
-                            await Task.Delay(1);
-                        }
+                            Image _clone = new Image
+                            {
+                                Source = BirdSprite.Source,
+                                Width = BirdSprite.Width,
+                                Height = BirdSprite.Height,
+                                Stretch = BirdSprite.Stretch,
+                                Translation = BirdSprite.Translation,
+                                HorizontalAlignment = BirdSprite.HorizontalAlignment,
+                                VerticalAlignment = BirdSprite.VerticalAlignment,
+                            };
 
-                        /// Load sprites from cache. This should improve performance and reduce flickering on sprite swap.
-                        /// Turns out, it still fucking flickers... fuck!
-                        BirdSprite.Source = CurrentBirdSimulation.Instance._imageCache[value];
+                            if (isBirdStationary)
+                            {
+                                CurrentBirdSimulation.Instance.RootGrid.Children.Add(_clone);
+                                await Task.Delay(1);
+                            }
 
-                        // remove cloned image again to only show new image after it has correctly loaded
-                        if (isBirdStationary)
-                        {
-                            await Task.Delay(1);
-                            CurrentBirdSimulation.Instance.RootGrid.Children.Remove(_clone);
-                        }
-                    });
+                            /// Load sprites from cache. This should improve performance and reduce flickering on sprite swap.
+                            /// Turns out, it still fucking flickers... fuck!
+                            BirdSprite.Source = CurrentBirdSimulation.Instance._imageCache[value];
+
+                            // remove cloned image again to only show new image after it has correctly loaded
+                            if (isBirdStationary)
+                            {
+                                await Task.Delay(1);
+                                CurrentBirdSimulation.Instance.RootGrid.Children.Remove(_clone);
+                            }
+                        });
+                    }
                 }
             }
         }
@@ -120,10 +123,13 @@ namespace Ozora
                 {
                     _position = value;
                     OnPropertyChanged(nameof(Position));
-                    CurrentBirdSimulation.Instance.UIDispatcherQueue.TryEnqueue(() =>
+                    if (CurrentBirdSimulation.Instance.UIDispatcherQueue != null)
                     {
-                        BirdSprite.Translation = value;
-                    });
+                        CurrentBirdSimulation.Instance.UIDispatcherQueue.TryEnqueue(() =>
+                        {
+                            BirdSprite.Translation = value;
+                        });
+                    }
                 }
             }
         }
@@ -157,11 +163,8 @@ namespace Ozora
                 /// Note that null states also allow this to be run.
                 /// In summary, this code will only run once to find a suitable first target.
                 Random rnd = new Random();
-                Debug.WriteLine(CurrentBirdSimulation.Instance.RestingSpots.Count());
                 if (CurrentBirdSimulation.Instance.RestingSpots.Count() > 0)
                 {
-                    foreach (RestingSpot spot in CurrentBirdSimulation.Instance.RestingSpots) { Debug.WriteLine(spot.Position); }
-
                     int _restingIndex = rnd.Next(0, CurrentBirdSimulation.Instance.RestingSpots.Count() - 1);
                     RestingSpot _spot = CurrentBirdSimulation.Instance.RestingSpots[_restingIndex];
                     if (_spot.IsOccupied != true) { TargetPosition = _spot.Position; TargetedRestingSpot = _spot; _spot.IsOccupied = true; IsTargetedLocationRestingSpot = true; }
@@ -336,6 +339,14 @@ namespace Ozora
                 }
                 return _instance;
             }
+        }
+
+        public void CleanUp()
+        {
+            CurrentBirdSimulation.Instance.RootGrid = null;
+            CurrentBirdSimulation.Instance.UIDispatcherQueue = null;
+            CurrentBirdSimulation.Instance.Birds = null;
+            CurrentBirdSimulation.Instance.RestingSpots = null;
         }
 
         public DispatcherQueue UIDispatcherQueue;

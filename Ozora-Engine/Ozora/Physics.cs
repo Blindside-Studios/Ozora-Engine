@@ -172,7 +172,7 @@ namespace Ozora
 
             // check movement delta to cancel animation if it got too small
             Vector3 _movedDistance = _finalTranslation - _vectorState.LastTranslation;
-            if (_movedDistance.Length() < 0.0001) { AnimateActivity = false; Debug.WriteLine("Animation cancelled"); }
+            if (_movedDistance.Length() < 0.0001) { AnimateActivity = false; Debug.WriteLine("Sun: Animation cancelled"); }
 
             _vectorState.RateOfChange = new Vector3(direction, 0);
             _vectorState.LastTranslation = _finalTranslation;
@@ -203,7 +203,7 @@ namespace Ozora
                     }
                     
                     // if cursor position remains unchanged, stop updating
-                    if (_vectorState.PointerPosition == CursorPosition) { AnimateActivity = false; Debug.WriteLine("Animation cancelled"); }
+                    if (_vectorState.PointerPosition == CursorPosition) { AnimateActivity = false; Debug.WriteLine("Clouds: Animation cancelled"); }
                     _vectorState.PointerPosition = CursorPosition;
                 });
             }

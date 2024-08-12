@@ -8,6 +8,7 @@ using Microsoft.UI.Xaml.Navigation;
 using Ozora;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -25,15 +26,30 @@ namespace Ozora_Playgrounds.Pages
     /// </summary>
     public sealed partial class BirdsSimulation : Page
     {
+        ParulAI parulAI;
         public BirdsSimulation()
         {
             this.InitializeComponent();
+            this.NavigationCacheMode = NavigationCacheMode.Disabled;
             this.Loaded += BirdsSimulation_Loaded;
+            this.Unloaded += BirdsSimulation_Unloaded;
+        }
+
+        private void BirdsSimulation_Unloaded(object sender, RoutedEventArgs e)
+        {
+            parulAI.StopSpawningBirds();
+            parulAI = null;
+            RootGrid.Children.Clear();
+
+            // important cleanup to prevent ghost birds from being cached and flickering when reloading the page
+            CurrentBirdSimulation.Instance.CleanUp();
+
+            Debug.WriteLine("Unloaded ParulAI Model");
         }
 
         private void BirdsSimulation_Loaded(object sender, RoutedEventArgs e)
         {
-            ParulAI parulAI = new ParulAI();
+            parulAI = new ParulAI();
 
             CurrentBirdSimulation.Instance.RestingSpots = new RestingSpot[]
             {

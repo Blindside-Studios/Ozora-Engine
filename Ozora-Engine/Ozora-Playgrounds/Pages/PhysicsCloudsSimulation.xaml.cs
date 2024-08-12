@@ -18,6 +18,7 @@ using System.Drawing;
 using Microsoft.UI.Xaml.Hosting;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml.Media.Imaging;
+using System.Diagnostics;
 
 namespace Ozora_Playgrounds.Pages
 {
@@ -28,10 +29,20 @@ namespace Ozora_Playgrounds.Pages
         public PhysicsCloudsSimulation()
         {
             this.InitializeComponent();
+            this.NavigationCacheMode = NavigationCacheMode.Disabled;
+            this.Unloaded += PhysicsCloudsSimulation_Unloaded;
 
             // make sure to wait for the CloudsGrid to be loaded so it has an actual width that can be used to compute the cloud distribution
             CloudsGrid.Loaded += CloudsGrid_Loaded;
             MouseViewModel.Instance.PropertyChanged += Instance_PropertyChanged;
+        }
+
+        private void PhysicsCloudsSimulation_Unloaded(object sender, RoutedEventArgs e)
+        {
+            ozoraEngine.Physics.MouseCursorEngaged = false;
+            ozoraEngine.Physics.InterruptSimulation();
+            ozoraEngine = null;
+            Debug.WriteLine("Unloaded Ozora Cloud Simulation Model");
         }
 
         private void CloudsGrid_Loaded(object sender, RoutedEventArgs e)
