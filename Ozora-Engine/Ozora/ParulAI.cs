@@ -62,6 +62,14 @@ namespace Ozora
                 CurrentBirdSimulation.Instance.RootGrid.Children.Add(_bird.BirdSprite);
                 CurrentBirdSimulation.Instance.Birds.Append(_bird);
                 _bird.BirdID = _numberOfBirds;
+                _bird.Personality = new BirdPersonality()
+                {
+                    Cleanliness = rnd.Next(2, 10),
+                    Energy = rnd.Next(2, 10),
+                    Hectic = rnd.Next(2, 10),
+                    Musical = rnd.Next(2, 10),
+                    Social = rnd.Next(2, 10)
+                };
                 _bird.EngageAI();
                 _numberOfBirds++;
             });
@@ -142,6 +150,7 @@ namespace Ozora
             }
         }
         private Vector3 _position;
+        public BirdPersonality Personality { get; set; }
         public Vector3 TargetPosition { get; set; }
 
         public RestingSpot RestingSpot { get; set; }
@@ -239,16 +248,33 @@ namespace Ozora
                             State = BirdState.Flying1;
                             break;
                         case BirdState.Sitting:
-                            int nextAnimationIndex = rnd.Next(0, 50);
-                            if (nextAnimationIndex < 41) State = BirdState.Sitting;
-                            else if (nextAnimationIndex < 43) State = BirdState.LookingLeft;
-                            else if (nextAnimationIndex < 45) State = BirdState.LookingRight;
-                            else if (nextAnimationIndex < 47) State = BirdState.ChattingLeft;
-                            else if (nextAnimationIndex < 48) State = BirdState.ChattingRight;
-                            else if (nextAnimationIndex < 49) State = BirdState.Singing1;
-                            else if (nextAnimationIndex < 50) State = BirdState.LookingAtWing1;
-                            // just have it fly off the screen in this case
-                            else if (nextAnimationIndex == 50)
+                            int baseRestingLikelihood = 40; // Base likelihood for resting
+                            int totalWeight = baseRestingLikelihood + Personality.Musical + Personality.Social + Personality.Hectic + Personality.Cleanliness + Personality.Energy;
+                            int randomValue = rnd.Next(0, totalWeight);
+
+                            if (randomValue < baseRestingLikelihood)
+                            {
+                                State = BirdState.Sitting;
+                            }
+                            else if (randomValue < baseRestingLikelihood + Personality.Musical) // Singing
+                            {
+                                State = BirdState.Singing1;
+                            }
+                            else if (randomValue < baseRestingLikelihood + Personality.Musical + Personality.Social) // Social
+                            {
+                                if (rnd.NextDouble() < 0.5) State = BirdState.ChattingLeft;
+                                else State = BirdState.ChattingRight;
+                            }
+                            else if (randomValue < baseRestingLikelihood + Personality.Musical + Personality.Social + Personality.Hectic) // Looking around / Hectic
+                            {
+                                if (rnd.NextDouble() < 0.5) State = BirdState.LookingLeft;
+                                else State = BirdState.LookingRight;
+                            }
+                            else if (randomValue < baseRestingLikelihood + Personality.Musical + Personality.Social + Personality.Hectic + Personality.Cleanliness) // Cleanliness
+                            {
+                                State = BirdState.LookingAtWing1;
+                            }
+                            else // Energy
                             {
                                 State = BirdState.Flying1;
                                 TargetPosition = new Vector3(5000, 500, 0);
@@ -259,20 +285,56 @@ namespace Ozora
                             }
                             break;
                         case BirdState.LookingLeft:
-                            var _nextBehaviorLookingLeft = rnd.NextDouble();
-                            if (_nextBehaviorLookingLeft < 0.75) State = BirdState.LookingLeft;
-                            else if (_nextBehaviorLookingLeft < 0.80) State = BirdState.LookingAtWing1; // in both sprites, bird is looking to left
-                            else if (_nextBehaviorLookingLeft < 0.85) State = BirdState.LookingRight;
-                            else if (_nextBehaviorLookingLeft < 0.95) State = BirdState.ChattingLeft;
-                            else State = BirdState.Sitting;
+                            int baseLookingLeftLikelihood = 40; // Base likelihood for resting
+                            int totalLookingLeftWeight = baseLookingLeftLikelihood + Personality.Social + Personality.Hectic + Personality.Cleanliness + Personality.Energy;
+                            int randomLookingLeftValue = rnd.Next(0, totalLookingLeftWeight);
+
+                            if (randomLookingLeftValue < baseLookingLeftLikelihood)
+                            {
+                                State = BirdState.LookingLeft;
+                            }
+                            else if (randomLookingLeftValue < baseLookingLeftLikelihood + Personality.Social) // Social
+                            {
+                                State = BirdState.ChattingLeft;
+                            }
+                            else if (randomLookingLeftValue < baseLookingLeftLikelihood + Personality.Social + Personality.Hectic) // Looking around / Hectic
+                            {
+                                State = BirdState.LookingRight;
+                            }
+                            else if (randomLookingLeftValue < baseLookingLeftLikelihood + Personality.Social + Personality.Hectic + Personality.Cleanliness) // Cleanliness
+                            {
+                                State = BirdState.LookingAtWing1;
+                            }
+                            else // When high energy, more likely to look forward again
+                            {
+                                State = BirdState.Sitting;
+                            }
                             break;
                         case BirdState.LookingRight:
-                            var _nextBehaviorLookingRight = rnd.NextDouble();
-                            if (_nextBehaviorLookingRight < 0.75) State = BirdState.LookingRight;
-                            else if (_nextBehaviorLookingRight < 0.80) State = BirdState.Singing1; // in both sprites, bird is looking to right
-                            else if (_nextBehaviorLookingRight < 0.85) State = BirdState.LookingLeft;
-                            else if (_nextBehaviorLookingRight < 0.95) State = BirdState.ChattingRight;
-                            else State = BirdState.Sitting;
+                            int baseLookingRightLikelihood = 40; // Base likelihood for resting
+                            int totalLookingRightWeight = baseLookingRightLikelihood + Personality.Social + Personality.Hectic + Personality.Musical + Personality.Energy;
+                            int randomLookingRightValue = rnd.Next(0, totalLookingRightWeight);
+
+                            if (randomLookingRightValue < baseLookingRightLikelihood)
+                            {
+                                State = BirdState.LookingRight;
+                            }
+                            else if (randomLookingRightValue < baseLookingRightLikelihood + Personality.Social) // Social
+                            {
+                                State = BirdState.ChattingRight;
+                            }
+                            else if (randomLookingRightValue < baseLookingRightLikelihood + Personality.Social + Personality.Hectic) // Looking around / Hectic
+                            {
+                                State = BirdState.LookingLeft;
+                            }
+                            else if (randomLookingRightValue < baseLookingRightLikelihood + Personality.Social + Personality.Hectic + Personality.Musical) // Musical
+                            {
+                                State = BirdState.Singing1;
+                            }
+                            else // When high energy, more likely to look forward again
+                            {
+                                State = BirdState.Sitting;
+                            }
                             break;
                         case BirdState.ChattingLeft:
                             var _nextBehaviorChattingLeft = rnd.NextDouble();
@@ -286,9 +348,9 @@ namespace Ozora
                             break;
                         case BirdState.StretchingWings:
                             var _nextBehaviorStretchingWings = rnd.NextDouble();
-                            if (_nextBehaviorStretchingWings < 0.3) State = BirdState.LookingAtWing1;
+                            if (_nextBehaviorStretchingWings * this.Personality.Cleanliness > 4) State = BirdState.LookingAtWing1;
                             // just have it fly off the screen in this case
-                            else if (_nextBehaviorStretchingWings < 0.4)
+                            else if (_nextBehaviorStretchingWings * this.Personality.Energy > 4)
                             {
                                 State = BirdState.Flying1;
                                 TargetPosition = new Vector3(5000, 500, 0);
@@ -301,22 +363,28 @@ namespace Ozora
                             break;
                         case BirdState.LookingAtWing1:
                             var _nextBehaviorLookingAtWing1 = rnd.NextDouble();
-                            if (_nextBehaviorLookingAtWing1 < 0.2) State = BirdState.LookingLeft;
+                            if (_nextBehaviorLookingAtWing1 * this.Personality.Hectic > 4) State = BirdState.LookingLeft;
                             else State = BirdState.LookingAtWing2;
                             break;
                         case BirdState.LookingAtWing2:
                             var _nextBehaviorLookingAtWing2 = rnd.NextDouble();
-                            if (_nextBehaviorLookingAtWing2 < 0.2) State = BirdState.LookingAtWing2;
-                            else if (_nextBehaviorLookingAtWing2 < 0.6) State = BirdState.LookingAtWing1;
-                            else if (_nextBehaviorLookingAtWing2 < 0.75) State = BirdState.LookingLeft;
-                            else State = BirdState.LookingAtWing3;
+                            if (_nextBehaviorLookingAtWing2 * this.Personality.Hectic > 6) State = BirdState.LookingLeft;
+                            else
+                            {
+                                if (_nextBehaviorLookingAtWing2 * this.Personality.Energy < 5) State = BirdState.LookingAtWing3;
+                                else State = BirdState.LookingAtWing1; // perform action again if a lot of energy is present
+                            }
                             break;
                         case BirdState.LookingAtWing3:
-                            var _nextBehaviorLookingAtWing3 = rnd.NextDouble();
-                            if (_nextBehaviorLookingAtWing3 < 0.7) State = BirdState.LookingRight;
-                            else if (_nextBehaviorLookingAtWing3 < 9) State = BirdState.ChattingRight;
-                            else if (_nextBehaviorLookingAtWing3 < 0.9) State = BirdState.StretchingWings;
-                            else State = BirdState.Sitting;
+                            var _totalBehaviorSumWingCheck3 = this.Personality.Hectic + this.Personality.Social + this.Personality.Energy;
+                            var _behaviorIndexWingCheck3 = rnd.NextDouble() * _totalBehaviorSumWingCheck3;
+                            if (_behaviorIndexWingCheck3 < this.Personality.Hectic) State = BirdState.LookingRight;
+                            else if (_behaviorIndexWingCheck3 < this.Personality.Hectic + this.Personality.Social) State = BirdState.ChattingRight;
+                            else
+                            {
+                                if (rnd.NextDouble() < 0.5) State = BirdState.StretchingWings;
+                                else State = BirdState.Sitting;
+                            }
                             break;
                         case BirdState.Singing1:
                             State = BirdState.Singing2;
@@ -325,15 +393,14 @@ namespace Ozora
                             State = BirdState.Singing3;
                             break;
                         case BirdState.Singing3:
-                            var _nextBehaviorSinging3 = rnd.NextDouble();
-                            if (_nextBehaviorSinging3 < 0.4) State = BirdState.Singing3;
-                            else State = BirdState.Singing4;
+                            State = BirdState.Singing4;
                             break;
                         case BirdState.Singing4:
-                            var _nextBehaviorSinging4 = rnd.NextDouble();
-                            if (_nextBehaviorSinging4 < 0.4) State = BirdState.LookingRight;
-                            if (_nextBehaviorSinging4 < 0.6) State = BirdState.ChattingRight;
-                            else State = BirdState.Sitting;
+                            var _totalBehaviorSumSing4 = 10 + this.Personality.Hectic + Personality.Social;
+                            var _behaviorIndexSinging4 = rnd.Next() * _totalBehaviorSumSing4;
+                            if (_behaviorIndexSinging4 < 10) State = BirdState.Sitting;
+                            else if (_behaviorIndexSinging4 < 10 + this.Personality.Hectic) State = BirdState.LookingRight;
+                            else State = BirdState.ChattingRight;
                             break;
                     }
                 }
@@ -692,6 +759,38 @@ namespace Ozora
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+    }
+
+    /// <summary>
+    /// Assigns some values to the bird's personality that are supposed to impact is behavior.
+    /// Each of these values is to be assigned an integer value from 2 to 10.
+    /// Do not assign less than 1, since that can make the bird more likely to get stuck in a loop.
+    /// </summary>
+    public class BirdPersonality
+    {
+        /// <summary>
+        /// Impacts the likelihood of the bird entering the singing event
+        /// </summary>
+        public int Musical { get; set; }
+        /// <summary>
+        /// Impacts how often a bird will engage in social activities.
+        /// This includes chatting, but also interaction with other birds.
+        /// </summary>
+        public int Social { get; set; }
+        /// <summary>
+        /// This impacts how often a bird looks around and how paranoid it appears
+        /// while doing so. A higher value means the bird will look around more often.
+        /// </summary>
+        public int Hectic { get; set; }
+        /// <summary>
+        /// This impacts how often a bird will check and stretch its wings.
+        /// </summary>
+        public int Cleanliness { get; set; }
+        /// <summary>
+        /// This impacts how likely a bird is to take off from its resting spot.
+        /// It also impacts how quickly a bird may perform an action and how thoroughly it's done.
+        /// </summary>
+        public int Energy { get; set; }
     }
 
     public class RestingSpot
