@@ -688,9 +688,41 @@ namespace Ozora
     {
         public string Identifier { get; set; }
         public Vector3 Position { get; set; }
-        public RestingSpot SpotToTheLeft { get; set; }
-        public RestingSpot SpotToTheRight { get; set; }
+        public RestingSpot SpotToTheLeft
+        {
+            get => SpotToTheLeft;
+            set
+            {
+                _spotToTheLeft = value;
+                if (value != null && value.SpotToTheRight != this)
+                {
+                    value.SpotToTheRight = this;
+                }
+            }
+        }
+        private RestingSpot _spotToTheLeft;
+        public RestingSpot SpotToTheRight
+        {
+            get => _spotToTheRight;
+            set
+            {
+                _spotToTheRight = value;
+                if (value != null && value.SpotToTheLeft != this)
+                {
+                    value.SpotToTheLeft = this;
+                }
+            }
+        }
+        private RestingSpot _spotToTheRight;
+        /// <summary>
+        /// IsOccupied is also true when a bird is currenly approaching 
+        /// to prevent another bird from targeting this spot.
+        /// </summary>
         public bool IsOccupied { get; set; }
+        /// <summary>
+        /// OccupyingBird refers to the bird that is actually sitting in the spot. 
+        /// This is used for multi-bird animations.
+        /// </summary>
         public Bird OccupyingBird { get; set; }
     }
 
