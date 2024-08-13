@@ -30,7 +30,7 @@ namespace Ozora
         {
             CurrentBirdSimulation.Instance.RefreshCachedSprites();
             CurrentBirdSimulation.Instance.Birds = new Bird[] { };
-            _timer = new Timer(_spawnBird, null, 0, 20000);
+            _timer = new Timer(_spawnBird, null, 0, 10000);
         }
 
         public void StopSpawningBirds()
@@ -169,12 +169,19 @@ namespace Ozora
                     Random rnd = new Random();
                     if (CurrentBirdSimulation.Instance.RestingSpots.Count() > 0)
                     {
-                        int _restingIndex = rnd.Next(0, CurrentBirdSimulation.Instance.RestingSpots.Count() - 1);
-                        RestingSpot _spot = CurrentBirdSimulation.Instance.RestingSpots[_restingIndex];
-                        if (_spot.IsOccupied != true) { TargetPosition = _spot.Position; TargetedRestingSpot = _spot; _spot.IsOccupied = true; IsTargetedLocationRestingSpot = true; }
-                        // 10000 is the expected maximum width, may update as needed. Curerntly, this is overkill, if it performs badly, this can be reduced, obviously.
-                        else
+                        List<RestingSpot> _freeRestingSpots = CurrentBirdSimulation.Instance.RestingSpots.Where(x => !x.IsOccupied).ToList<RestingSpot>();
+                        if (_freeRestingSpots.Count() > 0)
                         {
+                            int index = rnd.Next(0, _freeRestingSpots.Count() - 1);
+                            RestingSpot _spot = _freeRestingSpots[index];
+                            TargetPosition = _spot.Position; 
+                            TargetedRestingSpot = _spot; 
+                            _spot.IsOccupied = true; 
+                            IsTargetedLocationRestingSpot = true;
+                        }
+                        else 
+                        {
+                            // 10000 is the expected maximum width, may update as needed. Curerntly, this is overkill, if it performs badly, this can be reduced, obviously.
                             TargetPosition = new Vector3(10000, (float)rnd.Next(20, 200), 0);
                             IsTargetingLocation = true;
                             IsTargetedLocationRestingSpot = false;
@@ -331,7 +338,6 @@ namespace Ozora
 
         public void Kill()
         {
-
             this.RestingSpot.OccupyingBird = null;
             this.RestingSpot.IsOccupied = false;
             this.RestingSpot = null;
@@ -485,7 +491,7 @@ namespace Ozora
                 case NeighborhoodType.OnlyRight:
                     this._overriddenBehavior = true;
                     this.RestingSpot.SpotToTheRight.OccupyingBird._overriddenBehavior = true;
-                    var _rightBird = this.RestingSpot.SpotToTheLeft.OccupyingBird;
+                    var _rightBird = this.RestingSpot.SpotToTheRight.OccupyingBird;
                     // create interactions between both birds here
                     switch (rnd.Next(0, 2))
                     {
@@ -688,32 +694,18 @@ namespace Ozora
     {
         public string Identifier { get; set; }
         public Vector3 Position { get; set; }
-        public RestingSpot SpotToTheLeft
+        public RestingSpot SpotToTheLeft { get; set; }
+        public RestingSpot SpotToTheRight { get; set; }
+
+        public void SetNeighborRestingSpots (RestingSpot left, RestingSpot right)
         {
-            get => SpotToTheLeft;
-            set
-            {
-                _spotToTheLeft = value;
-                if (value != null && value.SpotToTheRight != this)
-                {
-                    value.SpotToTheRight = this;
-                }
-            }
+            this.SpotToTheLeft = left;
+            this.SpotToTheRight = right;
+            // set this spot as neighboring spot of the other spots too
+            if (left != null) { this.SpotToTheLeft.SpotToTheRight = this; }
+            if (right != null) { this.SpotToTheRight.SpotToTheLeft = this; }
         }
-        private RestingSpot _spotToTheLeft;
-        public RestingSpot SpotToTheRight
-        {
-            get => _spotToTheRight;
-            set
-            {
-                _spotToTheRight = value;
-                if (value != null && value.SpotToTheLeft != this)
-                {
-                    value.SpotToTheLeft = this;
-                }
-            }
-        }
-        private RestingSpot _spotToTheRight;
+
         /// <summary>
         /// IsOccupied is also true when a bird is currenly approaching 
         /// to prevent another bird from targeting this spot.

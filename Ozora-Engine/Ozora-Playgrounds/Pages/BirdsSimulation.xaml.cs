@@ -53,25 +53,16 @@ namespace Ozora_Playgrounds.Pages
 
             CurrentBirdSimulation.Instance.RestingSpots = new RestingSpot[]
             {
-                new RestingSpot() { Position = new System.Numerics.Vector3(500, 500, 0), IsOccupied = false },
-                new RestingSpot() { Position = new System.Numerics.Vector3(960,60,0), IsOccupied = false },
-                new RestingSpot() { Position = new System.Numerics.Vector3(400,80,0), IsOccupied = false },
-                new RestingSpot() { Position = new System.Numerics.Vector3(1000, 400, 0), IsOccupied = false }
+                new RestingSpot() { Position = new System.Numerics.Vector3(400,80,0), IsOccupied = false }, // top left
+                new RestingSpot() { Position = new System.Numerics.Vector3(960,60,0), IsOccupied = false }, // top right
+                new RestingSpot() { Position = new System.Numerics.Vector3(500, 500, 0), IsOccupied = false }, // bottom left
+                new RestingSpot() { Position = new System.Numerics.Vector3(1000, 400, 0), IsOccupied = false }, // bottom right
+                new RestingSpot() { Position = new System.Numerics.Vector3(600,70,0), IsOccupied = false }, // top center
+                new RestingSpot() { Position = new System.Numerics.Vector3(750, 450, 0), IsOccupied = false } // bottom center
             };
 
-            /*CurrentBirdSimulation.Instance.RestingSpots.Append(new RestingSpot() { Position = new System.Numerics.Vector3(500, 500, 0), IsOccupied = false });
-            CurrentBirdSimulation.Instance.RestingSpots.Append(new RestingSpot() { Position = new System.Numerics.Vector3(960,60,0), IsOccupied = false });
-            CurrentBirdSimulation.Instance.RestingSpots.Append(new RestingSpot() { Position = new System.Numerics.Vector3(400,80,0), IsOccupied = false });
-            CurrentBirdSimulation.Instance.RestingSpots.Append(new RestingSpot() { Position = new System.Numerics.Vector3(1000, 400, 0), IsOccupied = false });*/
-
-            /*foreach (Microsoft.UI.Xaml.Shapes.Rectangle rect in RootGrid.Children.OfType<Microsoft.UI.Xaml.Shapes.Rectangle>())
-            {
-                CurrentBirdSimulation.Instance.RestingSpots.Append(new RestingSpot()
-                {
-                    Position = rect.Translation,
-                    IsOccupied = false
-                });
-            }*/
+            CurrentBirdSimulation.Instance.RestingSpots[4].SetNeighborRestingSpots(CurrentBirdSimulation.Instance.RestingSpots[0], CurrentBirdSimulation.Instance.RestingSpots[1]);
+            CurrentBirdSimulation.Instance.RestingSpots[5].SetNeighborRestingSpots(CurrentBirdSimulation.Instance.RestingSpots[2], CurrentBirdSimulation.Instance.RestingSpots[3]);
 
             CurrentBirdSimulation.Instance.RootGrid = RootGrid;
             CurrentBirdSimulation.Instance.UIDispatcherQueue = DispatcherQueue;
