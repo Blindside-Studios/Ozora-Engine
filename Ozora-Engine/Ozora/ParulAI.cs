@@ -159,7 +159,7 @@ namespace Ozora
         public bool IsTargetedLocationRestingSpot { get; set; }
         public Image BirdSprite { get; set; }
         private bool _overriddenBehavior;
-        
+        private int _sittingCooldown = 20;
         private Timer _birdDecisionTimer;
 
         public void EngageAI()
@@ -231,6 +231,10 @@ namespace Ozora
                             Position = Position + _movement;
                         }
                     }
+                    else
+                    {
+                        _sittingCooldown--; // count down sitting cooldown to enable flying for bird again after it has been sitting down
+                    }
 
                     Random rnd = new Random();
                     switch (State)
@@ -249,9 +253,9 @@ namespace Ozora
                             break;
                         case BirdState.Sitting:
                             int baseRestingLikelihood = 40; // Base likelihood for resting
-                            int totalWeight = baseRestingLikelihood + Personality.Musical + Personality.Social + Personality.Hectic + Personality.Cleanliness + Personality.Energy;
+                            int totalWeight = baseRestingLikelihood + Personality.Musical + Personality.Social + Personality.Hectic + Personality.Cleanliness;
+                            if (_sittingCooldown < 1) totalWeight += this.Personality.Energy; // only allow bird to fly from sitting position after cooldown
                             int randomValue = rnd.Next(0, totalWeight);
-
                             if (randomValue < baseRestingLikelihood)
                             {
                                 State = BirdState.Sitting;
@@ -288,7 +292,6 @@ namespace Ozora
                             int baseLookingLeftLikelihood = 40; // Base likelihood for resting
                             int totalLookingLeftWeight = baseLookingLeftLikelihood + Personality.Social + Personality.Hectic + Personality.Cleanliness + Personality.Energy;
                             int randomLookingLeftValue = rnd.Next(0, totalLookingLeftWeight);
-
                             if (randomLookingLeftValue < baseLookingLeftLikelihood)
                             {
                                 State = BirdState.LookingLeft;
@@ -314,7 +317,6 @@ namespace Ozora
                             int baseLookingRightLikelihood = 40; // Base likelihood for resting
                             int totalLookingRightWeight = baseLookingRightLikelihood + Personality.Social + Personality.Hectic + Personality.Musical + Personality.Energy;
                             int randomLookingRightValue = rnd.Next(0, totalLookingRightWeight);
-
                             if (randomLookingRightValue < baseLookingRightLikelihood)
                             {
                                 State = BirdState.LookingRight;
@@ -352,6 +354,9 @@ namespace Ozora
                             // just have it fly off the screen in this case
                             else if (_nextBehaviorStretchingWings * this.Personality.Energy > 4)
                             {
+                                /// If the bird arrives here, it has stretched its wings before and likely also looked at its wings.
+                                /// Therefore, it is not necessary to add a cooldown check here. Let's just say stretching wings magically
+                                /// refills a bird's will to fly!
                                 State = BirdState.Flying1;
                                 TargetPosition = new Vector3(5000, 500, 0);
                                 IsTargetedLocationRestingSpot = false;
