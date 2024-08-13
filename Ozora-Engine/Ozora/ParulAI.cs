@@ -25,6 +25,7 @@ namespace Ozora
     public class ParulAI
     {
         private Timer _timer;
+        private int _numberOfBirds = 0;
 
         public void StartSpawningBirds()
         {
@@ -42,6 +43,8 @@ namespace Ozora
         {
             CurrentBirdSimulation.Instance.UIDispatcherQueue.TryEnqueue(() =>
             {
+                Random rnd = new Random();
+                
                 Bird _bird = new Bird();
                 _bird.BirdSprite = new Image();
                 var bitmapImage = new BitmapImage(new Uri("ms-appx:///BirdSprites/Flying1.png"));
@@ -54,17 +57,21 @@ namespace Ozora
 
                 _bird.State = BirdState.Flying1;
                 // TODO: No longer hardcode this value
-                _bird.Position = new Vector3(-128, 200, 0);
+                _bird.Position = new Vector3(-128, rnd.Next(0,400), 0);
 
                 CurrentBirdSimulation.Instance.RootGrid.Children.Add(_bird.BirdSprite);
                 CurrentBirdSimulation.Instance.Birds.Append(_bird);
+                _bird.BirdID = _numberOfBirds;
                 _bird.EngageAI();
+                _numberOfBirds++;
             });
         }
     }
 
     public class Bird: INotifyPropertyChanged
     {
+        public int BirdID { get; set; }
+        
         public BirdState State
         {
             get => _state;
@@ -220,6 +227,8 @@ namespace Ozora
                     }
 
                     Random rnd = new Random();
+                    // TODO: REMOVE
+                    if (BirdID == 0) Debug.WriteLine("Making decision");
                     switch (State)
                     {
                         case BirdState.Flying1:
@@ -687,6 +696,8 @@ namespace Ozora
         protected virtual void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            // TODO: REMOVE
+            if (BirdID == 0) Debug.WriteLine("Overriden:" + _overriddenBehavior + " Timer:" + _timer + " State:" + State);
         }
     }
 
