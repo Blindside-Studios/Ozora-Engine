@@ -151,14 +151,11 @@ namespace Ozora
         public Image BirdSprite { get; set; }
         private bool _overriddenBehavior;
         
-        private static Timer _timer;
+        private Timer _birdDecisionTimer;
 
         public void EngageAI()
         {
-            /// Technically, this would be loading all the sprites for each bird individually.
-            /// Not ideal but not the end of the world.
-            /// Can optimize later if necessary.
-            _timer = new Timer(_makeDecision, null, 0, 500);
+            _birdDecisionTimer = new Timer(_makeDecision, null, 0, 500);
         }
 
         private void _makeDecision(object state)
@@ -181,12 +178,12 @@ namespace Ozora
                         {
                             int index = rnd.Next(0, _freeRestingSpots.Count() - 1);
                             RestingSpot _spot = _freeRestingSpots[index];
-                            TargetPosition = _spot.Position; 
-                            TargetedRestingSpot = _spot; 
-                            _spot.IsOccupied = true; 
+                            TargetPosition = _spot.Position;
+                            TargetedRestingSpot = _spot;
+                            _spot.IsOccupied = true;
                             IsTargetedLocationRestingSpot = true;
                         }
-                        else 
+                        else
                         {
                             // 10000 is the expected maximum width, may update as needed. Curerntly, this is overkill, if it performs badly, this can be reduced, obviously.
                             TargetPosition = new Vector3(10000, (float)rnd.Next(20, 200), 0);
@@ -227,8 +224,6 @@ namespace Ozora
                     }
 
                     Random rnd = new Random();
-                    // TODO: REMOVE
-                    if (BirdID == 0) Debug.WriteLine("Making decision");
                     switch (State)
                     {
                         case BirdState.Flying1:
@@ -696,8 +691,6 @@ namespace Ozora
         protected virtual void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-            // TODO: REMOVE
-            if (BirdID == 0) Debug.WriteLine("Overriden:" + _overriddenBehavior + " Timer:" + _timer + " State:" + State);
         }
     }
 
