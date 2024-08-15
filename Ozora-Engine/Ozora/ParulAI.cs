@@ -70,7 +70,7 @@ namespace Ozora
                     Energy = rnd.Next(3, 10),
                     Hectic = rnd.Next(2, 10),
                     Musical = rnd.Next(2, 10),
-                    Social = rnd.Next(2, 10)
+                    Social = rnd.Next(2, 7)
                 };
                 _bird.EngageAI();
                 _numberOfBirds++;
@@ -294,6 +294,24 @@ namespace Ozora
                             }
                             else // Energy
                             {
+                                /// Decrease social activity of birds nex to to this one. 
+                                /// If a bird only experiences one boost and two leaves, it will have social points deducted; 
+                                /// this is a side effect of this method and I attribute it to depression or something
+                                if (this.RestingSpot.SpotToTheLeft != null)
+                                {
+                                    if (this.RestingSpot.SpotToTheLeft.OccupyingBird != null)
+                                    {
+                                        if (this.RestingSpot.SpotToTheLeft.OccupyingBird.Personality.Social > 3) this.RestingSpot.SpotToTheLeft.OccupyingBird.Personality.Social -= 3;
+                                    }
+                                }
+                                if (this.RestingSpot.SpotToTheRight != null)
+                                {
+                                    if (this.RestingSpot.SpotToTheRight.OccupyingBird != null)
+                                    {
+                                        if (this.RestingSpot.SpotToTheRight.OccupyingBird.Personality.Social > 3) this.RestingSpot.SpotToTheRight.OccupyingBird.Personality.Social -= 3;
+                                    }
+                                }
+
                                 State = BirdState.Flying1;
                                 TargetPosition = new Vector3(5000, 500, 0);
                                 IsTargetedLocationRestingSpot = false;
@@ -370,6 +388,24 @@ namespace Ozora
                             // just have it fly off the screen in this case
                             else if (_nextBehaviorStretchingWings * this.Personality.Energy > 4)
                             {
+                                /// Decrease social activity of birds nex to to this one. 
+                                /// If a bird only experiences one boost and two leaves, it will have social points deducted; 
+                                /// this is a side effect of this method and I attribute it to depression or something
+                                if (this.RestingSpot.SpotToTheLeft != null)
+                                {
+                                    if (this.RestingSpot.SpotToTheLeft.OccupyingBird != null)
+                                    {
+                                        if (this.RestingSpot.SpotToTheLeft.OccupyingBird.Personality.Social > 3) this.RestingSpot.SpotToTheLeft.OccupyingBird.Personality.Social -= 3;
+                                    }
+                                }
+                                if (this.RestingSpot.SpotToTheRight != null)
+                                {
+                                    if (this.RestingSpot.SpotToTheRight.OccupyingBird != null)
+                                    {
+                                        if (this.RestingSpot.SpotToTheRight.OccupyingBird.Personality.Social > 3) this.RestingSpot.SpotToTheRight.OccupyingBird.Personality.Social -= 3;
+                                    }
+                                }
+
                                 /// If the bird arrives here, it has stretched its wings before and likely also looked at its wings.
                                 /// Therefore, it is not necessary to add a cooldown check here. Let's just say stretching wings magically
                                 /// refills a bird's will to fly!
@@ -480,6 +516,8 @@ namespace Ozora
                     this._overriddenBehavior = true;
                     this.RestingSpot.SpotToTheLeft.OccupyingBird._overriddenBehavior = true;
                     var _leftBird = this.RestingSpot.SpotToTheLeft.OccupyingBird;
+                    this.Personality.Social += 4;
+                    _leftBird.Personality.Social += 4;
                     // create interactions between both birds here
                     switch (rnd.Next(0, 2))
                     {
@@ -495,12 +533,14 @@ namespace Ozora
                             _leftBird.State = BirdState.Singing3;
                             await Task.Delay(500);
                             _leftBird.State = BirdState.Singing4;
+                            _leftBird.Personality.Musical += 1; // grained confidence from singing in front of other bird
                             await Task.Delay(500);
                             _leftBird.State = BirdState.LookingRight;
                             this.State = BirdState.ChattingLeft;
                             await Task.Delay(500);
                             _leftBird.State = BirdState.ChattingRight;
                             this.State = BirdState.LookingAtWing1; // frame to be interpreted as "pointing with left wing"
+                            _leftBird.Personality.Musical += 1; // gained confidence from singing being appreciated - this can go to 11
                             await Task.Delay(500);
                             _leftBird.State = BirdState.StretchingWings;
                             this.State = BirdState.ChattingLeft;
@@ -528,6 +568,7 @@ namespace Ozora
                             _leftBird.State = BirdState.LookingRight;
                             this.State = BirdState.LookingLeft;
 
+                            bool didLeftBirdSing = false;
                             for (int i = 0; i < rnd.Next(2, 6); i++)
                             {
                                 var leftBirdBehavior = rnd.Next(0, 2);
@@ -541,6 +582,7 @@ namespace Ozora
                                         break;
                                     case 2:
                                         _leftBird.State = BirdState.Singing1;
+                                        didLeftBirdSing = true;
                                         break;
                                 }
                                 var rightBirdBehavior = rnd.Next(0, 2);
@@ -556,6 +598,7 @@ namespace Ozora
                                         this.State = BirdState.LookingAtWing1;
                                         break;
                                 }
+                                if (didLeftBirdSing && _leftBird.Personality.Musical < 10) _leftBird.Personality.Musical += 1;
                                 await Task.Delay(500);
                             }
                             _leftBird.State = BirdState.LookingRight;
@@ -588,6 +631,8 @@ namespace Ozora
                     this._overriddenBehavior = true;
                     this.RestingSpot.SpotToTheRight.OccupyingBird._overriddenBehavior = true;
                     var _rightBird = this.RestingSpot.SpotToTheRight.OccupyingBird;
+                    this.Personality.Social += 4;
+                    _rightBird.Personality.Social += 4;
                     // create interactions between both birds here
                     switch (rnd.Next(0, 2))
                     {
@@ -603,12 +648,14 @@ namespace Ozora
                             this.State = BirdState.Singing3;
                             await Task.Delay(500);
                             this.State = BirdState.Singing4;
+                            if (this.Personality.Musical < 10) this.Personality.Musical += 1; // gained confidence from singing in front of other bird
                             await Task.Delay(500);
                             this.State = BirdState.LookingRight;
                             _rightBird.State = BirdState.ChattingLeft;
                             await Task.Delay(500);
                             this.State = BirdState.ChattingRight;
                             _rightBird.State = BirdState.LookingAtWing1; // frame to be interpreted as "pointing with left wing"
+                            this.Personality.Musical += 1; // gained confidence from singing being appreciated - possible to go to 11 points
                             await Task.Delay(500);
                             this.State = BirdState.StretchingWings;
                             _rightBird.State = BirdState.ChattingLeft;
@@ -636,6 +683,7 @@ namespace Ozora
                             this.State = BirdState.LookingRight;
                             _rightBird.State = BirdState.LookingLeft;
 
+                            bool didThisBirdSing = false;
                             for (int i = 0; i < rnd.Next(2, 6); i++)
                             {
                                 var leftBirdBehavior = rnd.Next(0, 2);
@@ -649,6 +697,7 @@ namespace Ozora
                                         break;
                                     case 2:
                                         this.State = BirdState.Singing1;
+                                        didThisBirdSing = true;
                                         break;
                                 }
                                 var rightBirdBehavior = rnd.Next(0, 2);
@@ -664,6 +713,7 @@ namespace Ozora
                                         _rightBird.State = BirdState.LookingAtWing1;
                                         break;
                                 }
+                                if (didThisBirdSing && this.Personality.Musical < 10) this.Personality.Musical += 1;
                                 await Task.Delay(500);
                             }
                             this.State = BirdState.LookingRight;
@@ -698,6 +748,9 @@ namespace Ozora
                     this.RestingSpot.SpotToTheRight.OccupyingBird._overriddenBehavior = true;
                     var _leftBirdOf3 = this.RestingSpot.SpotToTheLeft.OccupyingBird;
                     var _rightBirdOf3 = this.RestingSpot.SpotToTheRight.OccupyingBird;
+                    this.Personality.Social += 4;
+                    _leftBirdOf3.Personality.Social += 4;
+                    _rightBirdOf3.Personality.Social += 4;
                     // create interactions between the three birds here
                     switch (rnd.Next(0, 1))
                     {
@@ -767,9 +820,14 @@ namespace Ozora
                             this.State = BirdState.StretchingWings;
                             _leftBirdOf3.State = BirdState.ChattingRight;
                             _rightBirdOf3.State = BirdState.ChattingLeft;
+                            await Task.Delay(500);
                             this.State = BirdState.Sitting;
                             _leftBirdOf3.State = BirdState.LookingRight;
                             _rightBirdOf3.State = BirdState.LookingLeft;
+                            // choir singing confidence bonus
+                            if (this.Personality.Musical < 10) this.Personality.Musical += 2;
+                            if (_leftBirdOf3.Personality.Musical < 10) _leftBirdOf3.Personality.Musical += 2;
+                            if (_rightBirdOf3.Personality.Musical < 10) _rightBirdOf3.Personality.Musical += 2;
                             break;
                     }
                     this._overriddenBehavior = true;
@@ -800,11 +858,15 @@ namespace Ozora
         /// <summary>
         /// Impacts how often a bird will engage in social activities.
         /// This includes chatting, but also interaction with other birds.
+        /// This stat can increase by one as the bird performs singing actions together with other birds.
+        /// This stat increases by two when a bird is complimented by another bird for its singing or when birds form a choir.
         /// </summary>
         public int Social { get; set; }
         /// <summary>
         /// This impacts how often a bird looks around and how paranoid it appears
         /// while doing so. A higher value means the bird will look around more often.
+        /// This stat increases by 4 when a bird is involved in a neighbior-animation and decreased by 3 when a bird next to it leaves,
+        /// which simulated chatting more while around other birds and the gained social skills after an interaction.
         /// </summary>
         public int Hectic { get; set; }
         /// <summary>
