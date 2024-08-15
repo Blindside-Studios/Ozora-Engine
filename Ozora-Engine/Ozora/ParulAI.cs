@@ -67,7 +67,7 @@ namespace Ozora
                 _bird.Personality = new BirdPersonality()
                 {
                     Cleanliness = rnd.Next(2, 10),
-                    Energy = rnd.Next(2, 10),
+                    Energy = rnd.Next(3, 10),
                     Hectic = rnd.Next(2, 10),
                     Musical = rnd.Next(2, 10),
                     Social = rnd.Next(2, 10)
@@ -231,7 +231,7 @@ namespace Ozora
                         {
                             // if not close to destination, continue moving
                             Vector3 _movement = new Vector3(TargetPosition.X - Position.X, TargetPosition.Y - Position.Y, 0);
-                            if (_movement.Length() > 40) _movement = Vector3.Normalize(_movement) * 40;
+                            if (_movement.Length() > this.Personality.Energy * 8) _movement = Vector3.Normalize(_movement) * (float)this.Personality.Energy * 8; // 40 units when at energy level 5/10
                             Position = Position + _movement;
 
                             // but if exited the grid, despawn
@@ -244,6 +244,10 @@ namespace Ozora
                     else
                     {
                         _sittingCooldown--; // count down sitting cooldown to enable flying for bird again after it has been sitting down
+
+                        /// Let the bird regain energy; 50 ticks to gain a bar, that would be 25 seconds to gain one whole "strength bar". 
+                        /// Also ensures the bird is more likely to fly off after it has spent some time sitting already - and will be faster when flying away.
+                        this.Personality.Energy += 0.02;
                     }
 
                     Random rnd = new Random();
@@ -264,7 +268,7 @@ namespace Ozora
                         case BirdState.Sitting:
                             int baseRestingLikelihood = 40; // Base likelihood for resting
                             int totalWeight = baseRestingLikelihood + Personality.Musical + Personality.Social + Personality.Hectic + Personality.Cleanliness;
-                            if (_sittingCooldown < 1) totalWeight += this.Personality.Energy; // only allow bird to fly from sitting position after cooldown
+                            if (_sittingCooldown < 1) totalWeight += (int)Math.Round(this.Personality.Energy); // only allow bird to fly from sitting position after cooldown
                             int randomValue = rnd.Next(0, totalWeight);
                             if (randomValue < baseRestingLikelihood)
                             {
@@ -300,7 +304,8 @@ namespace Ozora
                             break;
                         case BirdState.LookingLeft:
                             int baseLookingLeftLikelihood = 40; // Base likelihood for resting
-                            int totalLookingLeftWeight = baseLookingLeftLikelihood + Personality.Social + Personality.Hectic + Personality.Cleanliness + Personality.Energy;
+                            int _energy1 = (int)Math.Round(Personality.Energy);
+                            int totalLookingLeftWeight = baseLookingLeftLikelihood + Personality.Social + Personality.Hectic + Personality.Cleanliness + _energy1;
                             int randomLookingLeftValue = rnd.Next(0, totalLookingLeftWeight);
                             if (randomLookingLeftValue < baseLookingLeftLikelihood)
                             {
@@ -325,7 +330,8 @@ namespace Ozora
                             break;
                         case BirdState.LookingRight:
                             int baseLookingRightLikelihood = 40; // Base likelihood for resting
-                            int totalLookingRightWeight = baseLookingRightLikelihood + Personality.Social + Personality.Hectic + Personality.Musical + Personality.Energy;
+                            int _energy2 = (int)Math.Round(Personality.Energy);
+                            int totalLookingRightWeight = baseLookingRightLikelihood + Personality.Social + Personality.Hectic + Personality.Musical + _energy2;
                             int randomLookingRightValue = rnd.Next(0, totalLookingRightWeight);
                             if (randomLookingRightValue < baseLookingRightLikelihood)
                             {
@@ -808,8 +814,10 @@ namespace Ozora
         /// <summary>
         /// This impacts how likely a bird is to take off from its resting spot.
         /// It also impacts how quickly a bird may perform an action and how thoroughly it's done.
+        /// As this impacts flying speed, and takeoff-likeliness, this is a double to slowly increase while sitting.
+        /// To prevent extremely slow birds, you might want to consider setting this value at a minimum of 3, ideally 4 and up.
         /// </summary>
-        public int Energy { get; set; }
+        public double Energy { get; set; }
     }
 
     public class RestingSpot
