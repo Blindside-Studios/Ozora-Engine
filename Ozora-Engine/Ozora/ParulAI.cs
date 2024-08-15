@@ -247,7 +247,7 @@ namespace Ozora
 
                         /// Let the bird regain energy; 50 ticks to gain a bar, that would be 25 seconds to gain one whole "strength bar". 
                         /// Also ensures the bird is more likely to fly off after it has spent some time sitting already - and will be faster when flying away.
-                        this.Personality.Energy += 0.02;
+                        if (this.Personality.Energy < 10) this.Personality.Energy += 0.02;
                     }
 
                     Random rnd = new Random();
