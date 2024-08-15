@@ -416,9 +416,12 @@ namespace Ozora
 
         public void Kill()
         {
-            this.RestingSpot.OccupyingBird = null;
-            this.RestingSpot.IsOccupied = false;
-            this.RestingSpot = null;
+            if (this.RestingSpot != null)
+            {
+                this.RestingSpot.OccupyingBird = null;
+                this.RestingSpot.IsOccupied = false;
+                this.RestingSpot = null;
+            }
             CurrentBirdSimulation.Instance.UIDispatcherQueue.TryEnqueue(() =>
             {
                 CurrentBirdSimulation.Instance.RootGrid.Children.Remove(BirdSprite);
