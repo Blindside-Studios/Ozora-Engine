@@ -231,6 +231,12 @@ namespace Ozora
                             Vector3 _movement = new Vector3(TargetPosition.X - Position.X, TargetPosition.Y - Position.Y, 0);
                             if (_movement.Length() > 40) _movement = Vector3.Normalize(_movement) * 40;
                             Position = Position + _movement;
+
+                            // but if exited the grid, despawn
+                            CurrentBirdSimulation.Instance.UIDispatcherQueue.TryEnqueue(() =>
+                            {
+                                if (Position.X > CurrentBirdSimulation.Instance.RootGrid.ActualWidth && !IsTargetedLocationRestingSpot) this.Kill();
+                            });
                         }
                     }
                     else
