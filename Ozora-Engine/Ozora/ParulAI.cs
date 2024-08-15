@@ -416,6 +416,7 @@ namespace Ozora
 
         public void Kill()
         {
+            this._birdDecisionTimer = null;
             if (this.RestingSpot != null)
             {
                 this.RestingSpot.OccupyingBird = null;
