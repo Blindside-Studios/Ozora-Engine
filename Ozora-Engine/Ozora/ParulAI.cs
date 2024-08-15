@@ -26,12 +26,14 @@ namespace Ozora
     {
         private Timer _timer;
         private int _numberOfBirds = 0;
+        private int _birdSize;
 
-        public void StartSpawningBirds()
+        public void StartSpawningBirds(int BirdSize, int SpawnRateMS)
         {
+            _birdSize = BirdSize;
             CurrentBirdSimulation.Instance.RefreshCachedSprites();
             CurrentBirdSimulation.Instance.Birds = new Bird[] { };
-            _timer = new Timer(_spawnBird, null, 0, 10000);
+            _timer = new Timer(_spawnBird, null, 0, SpawnRateMS);
         }
 
         public void StopSpawningBirds()
@@ -50,14 +52,14 @@ namespace Ozora
                 var bitmapImage = new BitmapImage(new Uri("ms-appx:///BirdSprites/Flying1.png"));
                 _bird.BirdSprite.Source = bitmapImage;
                 _bird.BirdSprite.Stretch = Stretch.UniformToFill;
-                _bird.BirdSprite.Height = 128;
-                _bird.BirdSprite.Width = 128;
+                _bird.BirdSprite.Height = _birdSize;
+                _bird.BirdSprite.Width = _birdSize;
                 _bird.BirdSprite.HorizontalAlignment = Microsoft.UI.Xaml.HorizontalAlignment.Left;
                 _bird.BirdSprite.VerticalAlignment = Microsoft.UI.Xaml.VerticalAlignment.Top;
 
                 _bird.State = BirdState.Flying1;
                 // TODO: No longer hardcode this value
-                _bird.Position = new Vector3(-128, rnd.Next(0,400), 0);
+                _bird.Position = new Vector3(-_birdSize, rnd.Next(0,400), 0);
 
                 CurrentBirdSimulation.Instance.RootGrid.Children.Add(_bird.BirdSprite);
                 CurrentBirdSimulation.Instance.Birds.Append(_bird);

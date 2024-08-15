@@ -67,7 +67,7 @@ namespace Ozora_Playgrounds.Pages
             CurrentBirdSimulation.Instance.RootGrid = RootGrid;
             CurrentBirdSimulation.Instance.UIDispatcherQueue = DispatcherQueue;
 
-            parulAI.StartSpawningBirds();
+            parulAI.StartSpawningBirds(128, 10000);
         }
     }
 }
