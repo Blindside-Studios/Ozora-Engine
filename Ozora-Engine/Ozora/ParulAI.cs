@@ -209,17 +209,19 @@ namespace Ozora
                     {
                         if (Vector3.Distance(Position, TargetPosition) < 2f)
                         {
-                            // if close enough, snap to resting spot
-                            Position = TargetPosition;
-                            RestingSpot = TargetedRestingSpot;
-                            State = BirdState.Sitting;
-                            RestingSpot.OccupyingBird = this;
-                            this._interactWithNeighbor();
-
                             // if targeted position wasn't a resting spot but the bird went off the screen, dispose of the bird
                             if (!IsTargetedLocationRestingSpot)
                             {
                                 this.Kill();
+                            }
+                            else
+                            {
+                                // if close enough, snap to resting spot
+                                Position = TargetPosition;
+                                RestingSpot = TargetedRestingSpot;
+                                State = BirdState.Sitting;
+                                RestingSpot.OccupyingBird = this;
+                                this._interactWithNeighbor();
                             }
                             return;
                         }
