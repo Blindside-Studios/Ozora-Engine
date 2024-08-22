@@ -50,16 +50,13 @@ namespace Ozora_Playgrounds.Pages
         private void BirdsSimulation_Loaded(object sender, RoutedEventArgs e)
         {
             parulAI = new ParulAI();
-
-            CurrentBirdSimulation.Instance.RestingSpots = new RestingSpot[]
-            {
-                new RestingSpot() { Position = new System.Numerics.Vector3(400,80,0), IsOccupied = false }, // top left
-                new RestingSpot() { Position = new System.Numerics.Vector3(960,60,0), IsOccupied = false }, // top right
-                new RestingSpot() { Position = new System.Numerics.Vector3(500, 500, 0), IsOccupied = false }, // bottom left
-                new RestingSpot() { Position = new System.Numerics.Vector3(1000, 400, 0), IsOccupied = false }, // bottom right
-                new RestingSpot() { Position = new System.Numerics.Vector3(600,70,0), IsOccupied = false }, // top center
-                new RestingSpot() { Position = new System.Numerics.Vector3(750, 450, 0), IsOccupied = false } // bottom center
-            };
+            CurrentBirdSimulation.Instance.RestingSpots = new List<RestingSpot>();
+            CurrentBirdSimulation.Instance.RestingSpots.Add(new RestingSpot() { Position = new System.Numerics.Vector3(400, 80, 0), IsOccupied = false }); // top left
+            CurrentBirdSimulation.Instance.RestingSpots.Add(new RestingSpot() { Position = new System.Numerics.Vector3(960, 60, 0), IsOccupied = false }); // top right
+            CurrentBirdSimulation.Instance.RestingSpots.Add(new RestingSpot() { Position = new System.Numerics.Vector3(500, 500, 0), IsOccupied = false }); // bottom left
+            CurrentBirdSimulation.Instance.RestingSpots.Add(new RestingSpot() { Position = new System.Numerics.Vector3(1000, 400, 0), IsOccupied = false }); // bottom right
+            CurrentBirdSimulation.Instance.RestingSpots.Add(new RestingSpot() { Position = new System.Numerics.Vector3(600, 70, 0), IsOccupied = false }); // top center
+            CurrentBirdSimulation.Instance.RestingSpots.Add(new RestingSpot() { Position = new System.Numerics.Vector3(750, 450, 0), IsOccupied = false }); // bottom center
 
             CurrentBirdSimulation.Instance.RestingSpots[4].SetNeighborRestingSpots(CurrentBirdSimulation.Instance.RestingSpots[0], CurrentBirdSimulation.Instance.RestingSpots[1]);
             CurrentBirdSimulation.Instance.RestingSpots[5].SetNeighborRestingSpots(CurrentBirdSimulation.Instance.RestingSpots[2], CurrentBirdSimulation.Instance.RestingSpots[3]);

@@ -32,7 +32,7 @@ namespace Ozora
         {
             _birdSize = BirdSize;
             CurrentBirdSimulation.Instance.RefreshCachedSprites();
-            CurrentBirdSimulation.Instance.Birds = new Bird[] { };
+            CurrentBirdSimulation.Instance.Birds = new List<Bird> { };
             _timer = new Timer(_spawnBird, null, 0, SpawnRateMS);
         }
 
@@ -62,7 +62,7 @@ namespace Ozora
                 _bird.Position = new Vector3(-_birdSize, rnd.Next(0,400), 0);
 
                 CurrentBirdSimulation.Instance.RootGrid.Children.Add(_bird.BirdSprite);
-                CurrentBirdSimulation.Instance.Birds.Append(_bird);
+                CurrentBirdSimulation.Instance.Birds.Add(_bird);
                 _bird.BirdID = _numberOfBirds;
                 _bird.Personality = new BirdPersonality()
                 {
@@ -477,9 +477,7 @@ namespace Ozora
             {
                 CurrentBirdSimulation.Instance.RootGrid.Children.Remove(BirdSprite);
             });
-            var list = CurrentBirdSimulation.Instance.Birds.ToList();
-            list.Remove(this);
-            CurrentBirdSimulation.Instance.Birds = list.ToArray<Bird>();
+            CurrentBirdSimulation.Instance.Birds.Remove(this);
         }
 
         private async void _interactWithNeighbor()
@@ -935,8 +933,8 @@ namespace Ozora
 
         public DispatcherQueue UIDispatcherQueue;
         public Grid RootGrid { get; set; }
-        public RestingSpot[] RestingSpots { get; set; }
-        public Bird[] Birds { get; set; }
+        public List<RestingSpot> RestingSpots { get; set; }
+        public List<Bird> Birds { get; set; }
 
         internal Dictionary<BirdState, BitmapImage> _imageCache = new Dictionary<BirdState, BitmapImage>();
         public void RefreshCachedSprites()
