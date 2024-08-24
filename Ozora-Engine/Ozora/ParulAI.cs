@@ -235,10 +235,13 @@ namespace Ozora
                             Position = Position + _movement;
 
                             // but if exited the grid, despawn
-                            CurrentBirdSimulation.Instance.UIDispatcherQueue.TryEnqueue(() =>
+                            if (CurrentBirdSimulation.Instance.UIDispatcherQueue != null)
                             {
-                                if (Position.X > CurrentBirdSimulation.Instance.RootGrid.ActualWidth && !IsTargetedLocationRestingSpot) this.Kill();
-                            });
+                                CurrentBirdSimulation.Instance.UIDispatcherQueue.TryEnqueue(() =>
+                                {
+                                    if (Position.X > CurrentBirdSimulation.Instance.RootGrid.ActualWidth && !IsTargetedLocationRestingSpot) this.Kill();
+                                });
+                            }
                         }
                     }
                     else
