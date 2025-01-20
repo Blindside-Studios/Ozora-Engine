@@ -21,7 +21,7 @@ namespace Ozora_Playgrounds.Pages
         public PhysicsViewPort()
         {
             this.InitializeComponent();
-            BodyViewPort.NavigateToType(typeof(BirdsSimulation), null, null);
+            BodyViewPort.NavigateToType(typeof(PhysicsSunSimulation), null, null);
             StateOverlay.NavigateToType(typeof(ControlsOverlay), null, null);
 
             MouseViewModel.Instance.PropertyChanged += Instance_PropertyChanged;
